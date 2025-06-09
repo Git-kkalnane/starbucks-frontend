@@ -1,5 +1,6 @@
 import React from 'react';
 import { IoChevronBack } from 'react-icons/io5';
+import BackSVG from '../../assets/icons/back.svg?react';
 
 export function CommonHeader({
     title,
@@ -30,7 +31,7 @@ export function CommonHeader({
                     type="button"
                 >
                     {/* 아이콘: 왼쪽 화살표 */}
-                    <IoChevronBack size={30} />
+                    <BackSVG />
                 </button>
             )}
 
@@ -51,7 +52,9 @@ export function ColumnHeader({
 }) {
     return (
         <header
-            className={`px-3 py-3 ${height} ${className} ${hasShadow ? 'shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1)]' : ''}`}
+            className={`px-3 py-3 flex flex-col ${height} ${className} ${
+                hasShadow ? 'shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1)]' : ''
+            }`}
             style={{
                 backgroundColor: bgColor || 'transparent',
                 borderBottom: borderBottomColor ? `1px solid ${borderBottomColor}` : undefined,
@@ -65,7 +68,9 @@ export function ColumnHeader({
                     aria-label="뒤로가기"
                     type="button"
                 >
-                    <IoChevronBack size={30} />
+                    <span className="w-[30px] h-[30px] flex items-center">
+                        <BackSVG />
+                    </span>
                 </button>
             )}
 

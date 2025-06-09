@@ -1,26 +1,23 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaMoneyBillWave, FaCoffee, FaEllipsisH, FaAngleLeft, FaAngleRight } from 'react-icons/fa';
+import HomeSVG from '../assets/icons/home.svg?react';
+import PaySVG from '../assets/icons/pay.svg?react';
+import OrderSVG from '../assets/icons/order.svg?react';
+import OtherSVG from '../assets/icons/other.svg?react';
 
 import './Navigation.css';
 
 const Navigation = () => {
-    const [isCollapsed, setIsCollapsed] = useState(false);
-
     const navItems = [
-        { to: '/', icon: <FaHome />, label: 'Home' },
-        { to: '/pay', icon: <FaMoneyBillWave />, label: 'Pay' },
-        { to: '/order', icon: <FaCoffee />, label: 'Order' },
-        { to: '/other', icon: <FaEllipsisH />, label: 'Other' },
+        { to: '/', icon: <HomeSVG />, label: 'Home' },
+        { to: '/pay', icon: <PaySVG />, label: 'Pay' },
+        { to: '/order', icon: <OrderSVG />, label: 'Order' },
+        { to: '/other', icon: <OtherSVG />, label: 'Other' },
     ];
-
-    const toggleCollapse = () => {
-        setIsCollapsed(!isCollapsed);
-    };
 
     return (
         <>
-            <nav className={`bottom-nav ${isCollapsed ? 'collapsed' : ''}`}>
+            <nav className={`bottom-nav`}>
                 <div className="nav-logo">
                     <h2>Starbucks</h2>
                 </div>
@@ -37,15 +34,6 @@ const Navigation = () => {
                         </NavLink>
                     ))}
                 </div>
-
-                {/* 화면 사이즈 sm이면 버튼 사라짐 */}
-                <button
-                    className="collapse-btn"
-                    onClick={toggleCollapse}
-                    aria-label={isCollapsed ? 'Expand menu' : 'Collapse menu'}
-                >
-                    {isCollapsed ? <FaAngleRight /> : <FaAngleLeft />}
-                </button>
             </nav>
         </>
     );
