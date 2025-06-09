@@ -8,6 +8,7 @@ function ServicePanel({ className = '', services }) {
                     key={idx}
                     icon={item.icon}
                     label={item.label}
+                    to={item.to}
                     iconColor="[&>path]:!stroke-starbucks-green"
                 />
             ))}
