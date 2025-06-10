@@ -7,6 +7,7 @@ import Order from './pages/Order';
 import Other from './pages/Other';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import MockPage from './pages/MockPage';
 
 import './App.css';
 
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/other" element={<Other />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
+                    <Route path="/mock" element={<MockPage />} />
                 </Routes>
             </main>
         </div>
