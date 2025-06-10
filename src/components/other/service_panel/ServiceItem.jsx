@@ -1,30 +1,33 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function ServiceItem({
     icon,
     label,
+    to = '#', // 이동할 경로
     minW = 'min-w-[104px]',
     maxW = 'max-w-[120px]',
     minH = 'min-h-[104px]',
     maxH = 'max-h-[120px]',
-    iconColor = 'text-green-600', // 아이콘 색상 기본값
-    iconSize = 'w-8 h-8', // 아이콘 크기 기본값
+    iconColor = 'text-green-600',
+    iconSize = 'w-8 h-8',
     className = '',
 }) {
-    // 아이콘에 스타일 적용 (SVG icon 사용시 필요)
     const styledIcon = React.cloneElement(icon, {
         className: `${icon.props.className || ''} ${iconColor} ${iconSize}`,
     });
 
     return (
-        <div
+        <Link
+            to={to}
             className={`bg-white rounded-xl shadow flex flex-col items-center justify-center 
                         ${minW} ${maxW} ${minH} ${maxH} 
                         hover:shadow-md transition ${className}`}
         >
             <span className="mb-2 text-sm">{styledIcon}</span>
             <span className="text-sm font-bold">{label}</span>
-        </div>
+        </Link>
     );
 }
+
 export default ServiceItem;
