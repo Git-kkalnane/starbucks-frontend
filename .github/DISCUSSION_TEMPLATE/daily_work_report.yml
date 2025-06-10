@@ -1,0 +1,74 @@
+name: "회고록 (Daily Retrospective)"
+description: "일일 회고를 위한 템플릿입니다."
+title: "[[YYYY-MM-DD]] 회고록"
+labels: ["retrospective", "daily-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 1. 당일 목표 및 계획
+        ### 🔸 목표:
+     
+
+        ### 🔸 계획:
+        오늘 진행할 활동과 구체적인 단계별 계획을 세부적으로 작성합니다.
+  - type: checkboxes
+    attributes:
+      label: "오늘의 계획 및 진행 상황"
+      options:
+        - label: "기능 상세 구글시트로 작성 → 성종민"
+      
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## 2. 문제점 및 이슈 공유
+        ### 🔸 당일 발생한 문제점 및 이슈를 나열하고, 이를 해결하기 위한 접근 방법 및 조치 계획을 작성합니다.
+  - type: textarea
+    id: issues
+    attributes:
+      label: "문제점 및 이슈"
+      description: "발생한 문제점과 해결을 위한 접근 방법 및 조치 계획을 상세히 작성해주세요."
+      placeholder: "예시: API 연동 시 CORS 오류 발생. 해결 방안: 백엔드 팀과 협의하여 CORS 설정 업데이트 예정."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## 3. 기술적 피드백 및 개선사항
+        ### 🔸 기술적 피드백:
+        팀 내 또는 외부(강사, 멘토)에서 받은 기술적 피드백을 작성합니다.
+  - type: textarea
+    id: feedback
+    attributes:
+      label: "기술적 피드백"
+      description: "받은 피드백 내용을 작성해주세요."
+      placeholder: "예시: 코드 리뷰 시 함수명 컨벤션 관련 피드백."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ### 🔸 개선 사항:
+        피드백을 바탕으로 개선할 점을 작성합니다.
+  - type: textarea
+    id: improvements
+    attributes:
+      label: "개선 사항"
+      description: "피드백을 반영하여 개선할 내용을 작성해주세요."
+      placeholder: "예시: 다음 작업부터 함수명 컨벤션에 맞춰 재작성 예정."
+    validations:
+      required: false
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## 4. 다음 날 계획
+        ### 🔸 내일의 주요 작업 목표
+  - type: checkboxes
+    attributes:
+      label: "내일의 작업 목표"
+      options:
+        - label: "기능 상세 구글시트로 작성 → 성종민"
+    
