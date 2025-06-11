@@ -1,25 +1,21 @@
 import React from 'react';
 import DtSVG from '../../assets/icons/dt-icon.svg?react';
+import { useNavigate } from 'react-router-dom';
 
-function ShopItem({ shop, className = '', onClick }) {
+function ShopItem({ shop, className = '' }) {
+    const navigate = useNavigate();
     return (
         <div
-            className={`flex py-4 border-b border-gray-100 items-start ${className} ${
-                onClick ? 'cursor-pointer hover:bg-gray-50' : ''
-            }`}
-            onClick={onClick}
-            role={onClick ? 'button' : undefined}
-            tabIndex={onClick ? 0 : undefined}
-            onKeyDown={
-                onClick
-                    ? (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
-                              onClick(e);
-                          }
-                      }
-                    : undefined
-            }
+            className={`flex py-4 border-b border-gray-100 items-start ${className} cursor-pointer hover:bg-gray-50`}
+            onClick={() => navigate(`/order/shop/${shop.storeId}`)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigate(`/order/shop/${shop.storeId}`);
+                }
+            }}
         >
             <div className="flex-shrink-0 mr-4" style={{ width: '7rem', height: '7rem' }}>
                 <div className="relative w-full h-full bg-gray-100 rounded overflow-hidden">
