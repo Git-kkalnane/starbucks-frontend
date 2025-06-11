@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import MockPage from './pages/MockPage';
 import Cart from './pages/Cart';
+import NotFound from './pages/NotFound';
 
 import './App.css';
 
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/mock" element={<MockPage />} />
                     <Route path="/cart" element={<Cart />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </main>
         </div>
