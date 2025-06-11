@@ -40,14 +40,13 @@ function ShopList() {
     }, []);
 
     return (
-        <CommonLayout className="bg-white">
+        <CommonLayout className="">
             <CommonHeader onBack={() => window.history.back()} bgColor="white" />
             <FilterTabs
                 className="bg-white px-6 pt-2 pb-2 border-b border-gray-200"
                 onFilterChange={handleFilterChange}
                 activeFilter={selectedFilter}
             />
-
             <div className="w-full px-6 mx-auto font-sans">
                 {isLoading ? (
                     <LoadingSpinner message="매장 정보를 불러오는 중..." />
