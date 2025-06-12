@@ -26,7 +26,7 @@ export function CommonHeader({
             {onBack && (
                 <button
                     onClick={onBack}
-                    className="absolute left-4 p-2 text-gray-700 hover:text-gray-900 focus:outline-none"
+                    className="absolute p-2 text-gray-700 left-4 hover:text-gray-900 focus:outline-none"
                     aria-label="뒤로가기"
                     type="button"
                 >
@@ -43,7 +43,7 @@ export function CommonHeader({
 export function ColumnHeader({
     title,
     height = 'h-[103px]',
-    fontSize = 'text-4xl',
+    fontSize = 'text-3xl',
     hasShadow = false,
     bgColor = '',
     borderBottomColor = '',
