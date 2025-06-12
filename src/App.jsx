@@ -26,6 +26,8 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/mock" element={<MockPage />} />
+                    <Route path="/order/shop" element={<ShopList />} />
+                    <Route path="/order/shop/:id" element={<ShopDetail />} />
                 </Routes>
             </main>
         </div>
