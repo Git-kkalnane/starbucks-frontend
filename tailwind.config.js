@@ -8,9 +8,11 @@ export default {
             },
             colors: {
                 'bg-app': '#f6f5ef', // 배경색
-                'starbucks-green': '#007240',
-                'disabled-string': '#8b8b8b',
+                'starbucks-green': '#01A862',
+                'able-string': '#48b77a',
                 'main-button': '#686868',
+                'disabled-string': '#8b8b8b',
+                deactivation: '#e0e0e0',
             },
         },
     },
