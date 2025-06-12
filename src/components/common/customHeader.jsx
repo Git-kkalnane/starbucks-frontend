@@ -14,7 +14,7 @@ export function CommonHeader({
 }) {
     return (
         <header
-            className={`relative flex items-center justify-center px-3 ${height} ${className} ${
+            className={`relative flex items-center justify-center ${height} ${className} ${
                 hasShadow ? 'shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1)]' : ''
             }`}
             style={{
@@ -24,18 +24,21 @@ export function CommonHeader({
         >
             {/* 뒤로가기 버튼 */}
             {onBack && (
-                <button
-                    onClick={onBack}
-                    className="absolute left-4 p-2 text-gray-700 hover:text-gray-900 focus:outline-none"
-                    aria-label="뒤로가기"
-                    type="button"
-                >
-                    {/* 아이콘: 왼쪽 화살표 */}
-                    <BackSVG />
-                </button>
+                <div className="absolute left-2 flex items-center">
+                    <button
+                        onClick={onBack}
+                        className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 focus:outline-none overflow-visible"
+                        style={{ margin: '-0.25rem' }}
+                        aria-label="뒤로가기"
+                        type="button"
+                    >
+                        <BackSVG className="w-5 h-5" />
+                    </button>
+                </div>
             )}
 
-            <h1 className={`${fontSize} font-semibold`}>{title}</h1>
+            {/* 가운데 제목 */}
+            <h1 className={`${fontSize} font-semibold text-center`}>{title}</h1>
         </header>
     );
 }
