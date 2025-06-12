@@ -19,7 +19,7 @@ const CartItem = ({ item, isSelected, onToggleSelect, onRemove, onChangeQty, cla
                 <div className="font-bold text-[#222] text-base truncate">{item.name}</div>
                 <div className="text-xs text-disabled-string mb-1 truncate">{item.eng}</div>
                 <div className="flex flex-row items-center justify-between text-sm text-[#a6a6a6] font-medium mb-2">
-                    {item.option} <span className="ml-2 ">{item.price}원</span>
+                    {item.option} <span className="ml-2 ">{item.price.toLocaleString()}원</span>
                 </div>
                 <span className="my-4 underline cursor-pointer text-[#98714e] text-sm">옵션 변경</span>
                 <div className="my-2 flex flex-row items-center justify-between">
