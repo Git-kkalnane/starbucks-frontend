@@ -48,14 +48,19 @@ const sampleCart = [
 ];
 
 function Cart() {
-    const navigate = useNavigate();
-    const [cart, setCart] = useState(sampleCart); // 메뉴가 있는 상태로 기본 세팅
+    const [cart, setCart] = useState(sampleCart);
     const [selected, setSelected] = useState([]);
 
     const isAllSelected = cart.length > 0 && selected.length === cart.length;
-    const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-    const totalPrice = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+    const totalQty =
+        selected.length > 0
+            ? cart.filter((item) => selected.includes(item.id)).reduce((sum, item) => sum + item.qty, 0)
+            : 0;
 
+    const totalPrice =
+        selected.length > 0
+            ? cart.filter((item) => selected.includes(item.id)).reduce((sum, item) => sum + item.qty * item.price, 0)
+            : 0;
     // 선택/해제
     const toggleSelect = (id) => {
         setSelected((prev) => (prev.includes(id) ? prev.filter((sid) => sid !== id) : [...prev, id]));
