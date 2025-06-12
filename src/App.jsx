@@ -8,6 +8,8 @@ import Other from './pages/Other';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import MockPage from './pages/MockPage';
+import ShopList from './pages/shop/ShopList';
+import ShopDetail from './pages/shop/ShopDetail';
 import Cart from './pages/Cart';
 import NotFound from './pages/NotFound';
 
@@ -28,6 +30,8 @@ function App() {
                     <Route path="/mock" element={<MockPage />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="*" element={<NotFound />} />
+                    <Route path="/order/shop" element={<ShopList />} />
+                    <Route path="/order/shop/:id" element={<ShopDetail />} />
                 </Routes>
             </main>
         </div>
