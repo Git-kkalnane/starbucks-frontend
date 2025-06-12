@@ -5,7 +5,7 @@ export function CommonDivider({
     shadow = false,
 }) {
     return (
-        <section className="w-full max-w-md mt-10">
+        <section className="w-full max-w-md">
             <div
                 className="flex items-center mb-6"
                 style={{
