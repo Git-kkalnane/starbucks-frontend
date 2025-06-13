@@ -12,6 +12,7 @@ export default {
                 'able-string': '#48b77a',
                 'main-button': '#686868',
                 'disabled-string': '#8b8b8b',
+                'disabled-temperature-toggle': '#f7f7f7',
                 deactivation: '#e0e0e0',
             },
         },
