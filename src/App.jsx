@@ -10,6 +10,7 @@ import Signup from './pages/Signup';
 import MockPage from './pages/MockPage';
 
 import './App.css';
+import Charge from './pages/Charge';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/mock" element={<MockPage />} />
+                    <Route path="/charge" element={<Charge />} />
                 </Routes>
             </main>
         </div>
