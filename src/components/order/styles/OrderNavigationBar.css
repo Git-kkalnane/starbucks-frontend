@@ -1,0 +1,15 @@
+/* 모바일 화면 (640px 미만) 일때 fix로 사용 */
+@media (max-width: 639px) {
+    .order-navigation-bar {
+        position: fixed;
+        bottom: 4.3rem; /* 네비게이션 바 위에 위치 */
+        left: 0;
+        right: 0;
+        z-index: 10;
+    }
+
+    /* 하단 패딩 추가 */
+    .order-page-wrapper {
+        padding-bottom: 6rem; /* 네비게이션 바와 OrderNavigationBar를 위한 충분한 여백 */
+    }
+}
