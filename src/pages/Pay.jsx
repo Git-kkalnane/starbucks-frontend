@@ -16,10 +16,6 @@ const cardInfo2 = {
 
 function Pay() {
     return (
-        // <div className="page">
-        //     <h2>Pay</h2>
-        //     <p>Payment page</p>
-        // </div>
         <CommonLayout>
             <ColumnHeader
                 title="Pay"
