@@ -12,8 +12,11 @@ export const ChargeModal = ({ isModalOpen, setIsModalOpen, setSelectedUnit, modi
     return (
         <div>
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="w-5/6 pt-6 bg-white rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
+                <div className="md:pl-[var(--nav-width)] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div
+                        className=" max-w-[512px] md:w-1/2 sm:w-5/6 pt-6 bg-white rounded-lg shadow-lg"
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <h2 className="px-6 mb-4 text-lg font-semibold">1만원부터 55만원 까지 충전할 수 있어요</h2>
                         <div className="relative px-6 my-8 group">
                             <label
