@@ -16,16 +16,11 @@ const cardInfo2 = {
 
 function Pay() {
     return (
-        <CommonLayout>
-            <ColumnHeader
-                title="Pay"
-                height="h-32"
-                bgColor="white"
-                className="pt-20 shadow-[0_2px_3px_-1px_rgba(0,0,0,0.3)]"
-            />
-            <div className="mt-12 sm:mt-20 md:mt-30">
+        <CommonLayout className="pb-10">
+            <ColumnHeader title="Pay" bgColor="white" className="pt-16 shadow-[0_2px_3px_-1px_rgba(0,0,0,0.3)]" />
+            <div className="mt-6 sm:mt-12 md:mt-16">
                 <Card cardInfo={cardInfo1} />
-                <div className="grid mt-14 place-items-center">
+                <div className="grid mt-14 place-items-center ">
                     <Link to="/charge">
                         <button className="text-lg font-semibold text-[#01A862] border border-[#C0C0C0] rounded-lg px-8 py-4">
                             충전하기
