@@ -54,6 +54,7 @@ export const ChargeModal = ({ isModalOpen, setIsModalOpen, setSelectedUnit, modi
                             onClick={() => {
                                 setSelectedUnit(Number(value) * 10000);
                                 modifyCustomUnitValue(Number(value) * 10000);
+                                setValue('');
                                 setIsModalOpen(false);
                             }}
                             disabled={!isButtonEnabled}
