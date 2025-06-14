@@ -7,8 +7,8 @@ import { ChargeModal } from '../components/charge/ChargeModal';
 import { CommonBtn } from '../components/common/customBtn';
 
 function Charge() {
-    const [selectedUnit, setSelectedUnit] = useState(10000);
-    const [customUnitValue, setCustomUnitValue] = useState(0);
+    const [selectedUnit, setSelectedUnit] = useState(0);
+    const [customUnitValue, setCustomUnitValue] = useState(550000);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const units = [
@@ -66,6 +66,13 @@ function Charge() {
                         </li>
                     </ul>
                 </div>
+            </div>
+            <div className="absolute left-0 right-0 w-full  bottom-[70px] px-5 pt-3 pb-5 shadow-[0_-2px_3px_-1px_rgba(0,0,0,0.3)] border">
+                <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm text-[#98714E]">충전 후 예상 총 카드 잔액</p>
+                    <p className="text-2xl font-semibold">{selectedUnit.toLocaleString()}원</p>
+                </div>
+                <CommonBtn fullWidth={true} bgColor="bg-[#01A862]" title="충전하기" textColor="text-white" />
             </div>
             <ChargeModal
                 isModalOpen={isModalOpen}
