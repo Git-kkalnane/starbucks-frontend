@@ -24,10 +24,10 @@ export function CommonHeader({
         >
             {/* 뒤로가기 버튼 */}
             {onBack && (
-                <div className="absolute left-2 flex items-center">
+                <div className="absolute flex items-center left-2">
                     <button
                         onClick={onBack}
-                        className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 focus:outline-none overflow-visible"
+                        className="flex items-center justify-center w-6 h-6 overflow-visible text-gray-500 hover:text-gray-900 focus:outline-none"
                         style={{ margin: '-0.25rem' }}
                         aria-label="뒤로가기"
                         type="button"
@@ -46,7 +46,7 @@ export function CommonHeader({
 export function ColumnHeader({
     title,
     height = 'h-[103px]',
-    fontSize = 'text-4xl',
+    fontSize = 'text-3xl',
     hasShadow = false,
     bgColor = '',
     textColor = '',

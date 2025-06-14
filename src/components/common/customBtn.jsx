@@ -22,7 +22,7 @@ export function CommonBtn({
         font-sans
         font-semibold
         cursor-pointer
-        border border-[#006241]
+        border border-[#01A862]
         transition duration-300 ease-in-out
         ${fontSize}
         ${bgColor} ${textColor} ${hoverOpacity}

@@ -14,6 +14,7 @@ import Cart from './pages/Cart';
 import NotFound from './pages/NotFound';
 
 import './App.css';
+import Charge from './pages/Charge';
 
 function App() {
     return (
@@ -32,6 +33,7 @@ function App() {
                     <Route path="*" element={<NotFound />} />
                     <Route path="/order/shop" element={<ShopList />} />
                     <Route path="/order/shop/:id" element={<ShopDetail />} />
+                    <Route path="/charge" element={<Charge />} />
                 </Routes>
             </main>
         </div>
