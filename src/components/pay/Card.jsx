@@ -11,7 +11,7 @@ export const Card = ({ cardInfo }) => {
                 </CommonText>
             </div>
             <div className="mt-10">
-                <QRCodeSVG value={cardInfo.number} bgColor="#f6f5ef" />
+                <QRCodeSVG value={cardInfo.number} />
             </div>
             <div className="mt-8">
                 <CommonText className="card-number" fontSize="text-lg" weight="font-medium">
