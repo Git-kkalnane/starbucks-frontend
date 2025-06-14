@@ -12,6 +12,7 @@ import ShopList from './pages/shop/ShopList';
 import ShopDetail from './pages/shop/ShopDetail';
 import Cart from './pages/Cart';
 import NotFound from './pages/NotFound';
+import MenuDetail from './pages/menu/MenuDetail';
 
 import './App.css';
 
@@ -32,6 +33,7 @@ function App() {
                     <Route path="*" element={<NotFound />} />
                     <Route path="/order/shop" element={<ShopList />} />
                     <Route path="/order/shop/:id" element={<ShopDetail />} />
+                    <Route path="/order/menu/:id" element={<MenuDetail />} />
                 </Routes>
             </main>
         </div>

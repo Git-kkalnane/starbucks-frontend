@@ -5,7 +5,7 @@ export function CommonBtn({
     bgColor = 'bg-white',
     textColor = 'text-black',
     hoverOpacity = 'hover:opacity-90',
-    fontSize = 'text-sm',
+    textSize = 'text-sm',
     fullWidth = false,
     paddingX = 'px-6',
     paddingY = 'py-3',
@@ -24,7 +24,7 @@ export function CommonBtn({
         cursor-pointer
         border border-[#006241]
         transition duration-300 ease-in-out
-        ${fontSize}
+        ${textSize}
         ${bgColor} ${textColor} ${hoverOpacity}
         ${className}
       `}
