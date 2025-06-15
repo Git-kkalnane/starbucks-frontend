@@ -2,10 +2,7 @@ import { useState } from 'react';
 
 export const ChargeModal = ({ isModalOpen, setIsModalOpen, setSelectedUnit, modifyCustomUnitValue }) => {
     const [value, setValue] = useState('');
-
-    const handleChange = (e) => {
-        setValue(e.target.value);
-    };
+    const [error, setError] = useState('');
 
     return (
         <div>
@@ -16,13 +13,14 @@ export const ChargeModal = ({ isModalOpen, setIsModalOpen, setSelectedUnit, modi
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h2 className="px-6 mb-4 text-lg font-semibold">1만원부터 55만원 까지 충전할 수 있어요</h2>
-                        <InputForm value={value} handleChange={handleChange} />
+                        <InputForm value={value} setValue={setValue} error={error} setError={setError} />
                         <ModalButtonArea
                             setSelectedUnit={setSelectedUnit}
                             setIsModalOpen={setIsModalOpen}
                             modifyCustomUnitValue={modifyCustomUnitValue}
                             value={value}
                             setValue={setValue}
+                            setError={setError}
                         />
                     </div>
                 </div>
@@ -31,7 +29,17 @@ export const ChargeModal = ({ isModalOpen, setIsModalOpen, setSelectedUnit, modi
     );
 };
 
-const InputForm = ({ value, handleChange }) => {
+const InputForm = ({ value, setValue, error, setError }) => {
+    const onClickHandler = () => {
+        if (error !== '') {
+            setError('');
+        }
+    };
+
+    const handleChange = (e) => {
+        setValue(e.target.value);
+    };
+
     return (
         <div className="relative px-6 my-8 group">
             <label
@@ -45,41 +53,69 @@ const InputForm = ({ value, handleChange }) => {
                     id="myInput"
                     type="text"
                     value={value}
+                    onClick={onClickHandler}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border-b border-[#E0E0E0] focus:outline-none focus:border-[#00A862] inline pl-0"
+                    className="w-full px-3 py-2 border-b border-[#E0E0E0] focus:outline-none focus:border-[#00A862] inline pl-1"
                     placeholder="충전 금액(1만원 단위)"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-[#686868]">만원</span>
             </div>
+            <label
+                htmlFor="myInput"
+                className={`${error === '' ? 'hidden' : 'visible'} text-xs font-medium text-red-500`}
+            >
+                {error}
+            </label>
         </div>
     );
 };
 
-const ModalButtonArea = ({ setSelectedUnit, setIsModalOpen, modifyCustomUnitValue, value, setValue }) => {
+const ModalButtonArea = ({ setSelectedUnit, setIsModalOpen, modifyCustomUnitValue, value, setValue, setError }) => {
+    const cancelButtonClickHandler = () => {
+        setSelectedUnit(10000);
+        setIsModalOpen(false);
+    };
+
+    const validateInput = (validValue) => {
+        let error = '';
+
+        if (!/^\d+$/.test(validValue)) {
+            error = '숫자만 입력 가능합니다';
+        } else if (Number(validValue) > 55) {
+            error = '입력 금액은 55만원을 초과할 수 없습니다';
+        }
+
+        return error;
+    };
+
+    const confirmButtonClickHandler = () => {
+        const error = validateInput(value);
+        if (error !== '') {
+            setError(error);
+        } else {
+            setSelectedUnit(Number(value) * 10000);
+            modifyCustomUnitValue(Number(value) * 10000);
+            setValue('');
+            setIsModalOpen(false);
+        }
+    };
+
     const isButtonEnabled = value.trim() !== '';
 
     return (
         <div>
             <button
                 name="cancel-btn"
-                onClick={() => {
-                    setSelectedUnit(10000);
-                    setIsModalOpen(false);
-                }}
+                onClick={cancelButtonClickHandler}
                 className="w-1/2 px-4 py-4 font-semibold text-black border rounded-bl-lg"
             >
                 취소
             </button>
             <button
                 name="confirm-btn"
-                onClick={() => {
-                    setSelectedUnit(Number(value) * 10000);
-                    modifyCustomUnitValue(Number(value) * 10000);
-                    setValue('');
-                    setIsModalOpen(false);
-                }}
+                onClick={confirmButtonClickHandler}
                 disabled={!isButtonEnabled}
-                className={`w-1/2 px-4 py-4 font-semibold border rounded-br-lg text-[#00A862] disabled:text-[#C0C0C0]`}
+                className="w-1/2 px-4 py-4 font-semibold border rounded-br-lg text-[#00A862] disabled:text-[#C0C0C0]"
             >
                 충전하기
             </button>
