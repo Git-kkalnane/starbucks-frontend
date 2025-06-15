@@ -7,18 +7,19 @@ export function CommonHeader({
     height = 'h-[46px]',
     fontSize = 'text-base',
     hasShadow = false,
-    bgColor = '',
+    bgColor = 'bg-transparent',
+    iconColor = 'black',
+    iconSize = 'w-6 h-6',
     borderBottomColor = '',
     onBack,
     className = '',
 }) {
     return (
         <header
-            className={`relative flex items-center justify-center ${height} ${className} ${
+            className={`relative ${bgColor} flex items-center justify-center ${height} ${className} ${
                 hasShadow ? 'shadow-[0_2px_4px_-1px_rgba(0,0,0,0.1)]' : ''
             }`}
             style={{
-                backgroundColor: bgColor || 'transparent',
                 borderBottom: borderBottomColor ? `1px solid ${borderBottomColor}` : undefined,
             }}
         >
@@ -27,12 +28,14 @@ export function CommonHeader({
                 <div className="absolute flex items-center left-2">
                     <button
                         onClick={onBack}
-                        className="flex items-center justify-center w-6 h-6 overflow-visible text-gray-500 hover:text-gray-900 focus:outline-none"
+                        className={`flex items-center justify-center ${iconColor} hover:text-gray-900 focus:outline-none overflow-visible`}
                         style={{ margin: '-0.25rem' }}
                         aria-label="뒤로가기"
                         type="button"
                     >
-                        <BackSVG className="w-5 h-5" />
+                        <span className={`${iconSize} flex items-center`}>
+                            <BackSVG style={{ color: iconColor }} />
+                        </span>
                     </button>
                 </div>
             )}
@@ -49,7 +52,8 @@ export function ColumnHeader({
     fontSize = 'text-3xl',
     hasShadow = false,
     bgColor = '',
-    textColor = '',
+    textColor = 'black',
+    iconColor = 'black',
     borderBottomColor = '',
     onBack,
     className = '',
@@ -68,12 +72,12 @@ export function ColumnHeader({
             {onBack && (
                 <button
                     onClick={onBack}
-                    className="mb-2 text-gray-500 hover:text-gray-900 focus:outline-none"
+                    className={`mb-2 ${iconColor} hover:text-gray-900 focus:outline-none`}
                     aria-label="뒤로가기"
                     type="button"
                 >
-                    <span className="w-[20px] h-[20px] flex items-center">
-                        <BackSVG fill={textColor} />
+                    <span className="w-[24px] h-[24px] flex items-center">
+                        <BackSVG style={{ color: iconColor }} />
                     </span>
                 </button>
             )}

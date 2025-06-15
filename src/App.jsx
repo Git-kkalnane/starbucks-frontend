@@ -12,6 +12,7 @@ import ShopList from './pages/shop/ShopList';
 import ShopDetail from './pages/shop/ShopDetail';
 import Cart from './pages/Cart';
 import NotFound from './pages/NotFound';
+import MenuDetail from './pages/menu/MenuDetail';
 
 import './App.css';
 import Charge from './pages/Charge';
@@ -24,6 +25,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/pay" element={<Pay />} />
+                    <Route path="/charge" element={<Charge />} />
                     <Route path="/order" element={<Order />} />
                     <Route path="/other" element={<Other />} />
                     <Route path="/login" element={<Login />} />
@@ -33,7 +35,7 @@ function App() {
                     <Route path="*" element={<NotFound />} />
                     <Route path="/order/shop" element={<ShopList />} />
                     <Route path="/order/shop/:id" element={<ShopDetail />} />
-                    <Route path="/charge" element={<Charge />} />
+                    <Route path="/order/menu/:id" element={<MenuDetail />} />
                 </Routes>
             </main>
         </div>
