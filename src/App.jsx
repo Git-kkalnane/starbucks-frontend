@@ -15,6 +15,7 @@ import NotFound from './pages/NotFound';
 import MenuDetail from './pages/menu/MenuDetail';
 
 import './App.css';
+import Charge from './pages/Charge';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/pay" element={<Pay />} />
+                    <Route path="/charge" element={<Charge />} />
                     <Route path="/order" element={<Order />} />
                     <Route path="/other" element={<Other />} />
                     <Route path="/login" element={<Login />} />

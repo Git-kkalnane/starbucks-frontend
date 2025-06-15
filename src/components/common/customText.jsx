@@ -18,10 +18,17 @@ import React from 'react';
 | `text-9xl`     | 8rem (128px)    |        |
 */
 
-export function CommonText({ children, fontSize = 'text-base', bold = false, multiline = false, className = '' }) {
+export function CommonText({
+    children,
+    fontSize = 'text-base',
+    bold = false,
+    weight = 'font-normal',
+    multiline = false,
+    className = '',
+}) {
     return (
         <p
-            className={`font-sans ${fontSize} ${bold ? 'font-bold' : 'font-normal'} ${
+            className={`font-sans ${fontSize} ${bold ? 'font-bold' : 'font-normal'} ${weight} ${
                 multiline ? 'whitespace-normal break-words' : 'whitespace-nowrap overflow-hidden text-ellipsis'
             } ${className}`}
         >
