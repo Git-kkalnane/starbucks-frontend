@@ -16,6 +16,8 @@ import MenuDetail from './pages/menu/MenuDetail';
 
 import './App.css';
 import Charge from './pages/Charge';
+import Account from './pages/account/Account';
+import NickName from './pages/account/NickName';
 
 function App() {
     return (
@@ -30,6 +32,7 @@ function App() {
                     <Route path="/other" element={<Other />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
+                    <Route path="/account" element={<Account />} />
                     <Route path="/mock" element={<MockPage />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="*" element={<NotFound />} />
