@@ -13,7 +13,7 @@ import ShopDetail from './pages/shop/ShopDetail';
 import Cart from './pages/Cart';
 import NotFound from './pages/NotFound';
 import MenuDetail from './pages/menu/MenuDetail';
-
+import OrderTracker from './pages/order/OrderTracker';
 import './App.css';
 import Charge from './pages/Charge';
 
@@ -36,6 +36,7 @@ function App() {
                     <Route path="/order/shop" element={<ShopList />} />
                     <Route path="/order/shop/:id" element={<ShopDetail />} />
                     <Route path="/order/menu/:id" element={<MenuDetail />} />
+                    <Route path="/order/tracking" element={<OrderTracker />} />
                 </Routes>
             </main>
         </div>
