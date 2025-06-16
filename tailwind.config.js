@@ -14,6 +14,7 @@ export default {
                 'disabled-string': '#8b8b8b',
                 'disabled-temperature-toggle': '#f7f7f7',
                 deactivation: '#e0e0e0',
+                'custom-gray1': '#f7f7f7',
             },
         },
     },
