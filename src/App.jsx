@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Account from './pages/account/Account';
 import NickName from './pages/account/NickName';
+import Password from './pages/account/Password';
 import MockPage from './pages/MockPage';
 import ShopList from './pages/shop/ShopList';
 import ShopDetail from './pages/shop/ShopDetail';
@@ -34,6 +35,7 @@ function App() {
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/account" element={<Account />} />
                     <Route path="/account/nickname" element={<NickName />} />
+                    <Route path="/account/password" element={<Password />} />
                     <Route path="/mock" element={<MockPage />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="*" element={<NotFound />} />
