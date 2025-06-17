@@ -72,22 +72,7 @@ function Password() {
                     placeholder="새 비밀번호 확인"
                 />
             </div>
-            <div className="w-full h-80 bg-[#F5F5F5] absolute bottom-[100px] px-8 pt-8 text-[#676767]">
-                <CommonText fontSize="text-lg" weight="font-semibold" className="mb-1">
-                    안전한 비밀번호 만들기
-                </CommonText>
-                <ul className="px-4 text-sm list-disc">
-                    <li>영문, 숫자 혼합하여 10~20자리 이내로 입력하세요.</li>
-                    <li>
-                        아이디와 같은 비밀번호, 생일, 학번, 전화번호 등 개인정보와 관련된 숫자, 동일하게 반복된 숫자 등
-                        다른 사람이 쉽게 알아낼 수 있는 비밀번호는 유출 위험이 높아 사용하지 않는 것이 좋습니다.
-                    </li>
-                    <li>
-                        이전에 사용하셨던 비밀번호를 재사용할 경우 도용의 우려가 있으니, 가급적 새로운 비밀번호를 사용해
-                        주세요.
-                    </li>
-                </ul>
-            </div>
+            <PasswordRuleNotice />
             <div className="absolute left-0 right-0 w-full bg-white bottom-[66px] px-5 py-5 border">
                 <CommonBtn
                     className="disabled:bg-[#E0E0E0] disabled:border-[#E0E0E0]"
@@ -129,6 +114,27 @@ const InputField = ({ onChangeHandler, onBlurHandler, value, error, errorMessage
                 placeholder={placeholder}
             />
             <label className={`${error ? 'visible' : 'hidden'} text-xs font-medium text-red-500`}>{errorMessage}</label>
+        </div>
+    );
+};
+
+const PasswordRuleNotice = () => {
+    return (
+        <div className="w-full h-80 bg-[#F5F5F5] absolute bottom-[100px] px-8 pt-8 text-[#676767]">
+            <CommonText fontSize="text-lg" weight="font-semibold" className="mb-1">
+                안전한 비밀번호 만들기
+            </CommonText>
+            <ul className="px-4 text-sm list-disc">
+                <li>영문, 숫자 혼합하여 10~20자리 이내로 입력하세요.</li>
+                <li>
+                    아이디와 같은 비밀번호, 생일, 학번, 전화번호 등 개인정보와 관련된 숫자, 동일하게 반복된 숫자 등 다른
+                    사람이 쉽게 알아낼 수 있는 비밀번호는 유출 위험이 높아 사용하지 않는 것이 좋습니다.
+                </li>
+                <li>
+                    이전에 사용하셨던 비밀번호를 재사용할 경우 도용의 우려가 있으니, 가급적 새로운 비밀번호를 사용해
+                    주세요.
+                </li>
+            </ul>
         </div>
     );
 };
