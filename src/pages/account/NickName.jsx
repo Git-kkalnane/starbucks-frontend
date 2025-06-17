@@ -8,6 +8,23 @@ function NickName() {
     const [value, setValue] = useState('사용자닉네임');
     const [error, setError] = useState(false);
 
+    const onFocusHandler = () => {
+        if (error) {
+            setError(false);
+        }
+    };
+
+    const onChangeHandler = (e) => {
+        setValue(e.target.value);
+        console.log(value);
+    };
+
+    const onBlurHandler = () => {
+        if (!/^[가-힣]+$/.test(value)) {
+            setError(true);
+        }
+    };
+
     return (
         <CommonLayout>
             <CommonHeader
@@ -22,23 +39,15 @@ function NickName() {
                         type="text"
                         value={value}
                         maxLength={6}
-                        onFocus={() => {
-                            if (error) {
-                                setError(false);
-                            }
-                        }}
-                        onChange={(e) => {
-                            setValue(e.target.value);
-                            console.log(value);
-                        }}
-                        onBlur={() => {
-                            if (!/^[가-힣]+$/.test(value)) {
-                                setError(true);
-                            }
-                        }}
+                        onFocus={onFocusHandler}
+                        onChange={onChangeHandler}
+                        onBlur={onBlurHandler}
                         className="px-3 border border-[#D8D8D8] rounded-md basis-3/4"
                     />
-                    <button className="px-4 text-white border rounded-md h-11 basis-1/4 border-starbucks-green bg-starbucks-green">
+                    <button
+                        className="px-4 text-white border rounded-md h-11 basis-1/4 border-starbucks-green bg-starbucks-green disabled:border-[#E0E0E0] disabled:bg-[#E0E0E0]"
+                        disabled={error}
+                    >
                         저장하기
                     </button>
                 </div>
