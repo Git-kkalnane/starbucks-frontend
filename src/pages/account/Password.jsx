@@ -93,7 +93,7 @@ function Password() {
                     className="disabled:bg-[#E0E0E0] disabled:border-[#E0E0E0]"
                     fullWidth={true}
                     bgColor="bg-[#01A862]"
-                    title="충전하기"
+                    title="확인"
                     textColor="text-white"
                     onClick={() => console.log('클릭')}
                     disabled={buttonDisabled}
