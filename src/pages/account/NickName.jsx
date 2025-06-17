@@ -6,6 +6,7 @@ import CommonLayout from '../../layouts/CommonLayout';
 
 function NickName() {
     const [value, setValue] = useState('사용자닉네임');
+    const [error, setError] = useState(false);
 
     return (
         <CommonLayout>
@@ -16,14 +17,24 @@ function NickName() {
             />
             <div className="mx-5 mt-5">
                 <CommonText>닉네임을 입력해주세요. (한글 최대 6자)</CommonText>
-                <div className="flex gap-1 mt-3 mb-5">
+                <div className="flex gap-1 mt-3">
                     <input
                         type="text"
                         value={value}
                         maxLength={6}
+                        onFocus={() => {
+                            if (error) {
+                                setError(false);
+                            }
+                        }}
                         onChange={(e) => {
                             setValue(e.target.value);
                             console.log(value);
+                        }}
+                        onBlur={() => {
+                            if (!/^[가-힣]+$/.test(value)) {
+                                setError(true);
+                            }
                         }}
                         className="px-3 border border-[#D8D8D8] rounded-md basis-3/4"
                     />
@@ -31,6 +42,10 @@ function NickName() {
                         저장하기
                     </button>
                 </div>
+                <label className={`${error ? 'visible' : 'hidden'} text-xs font-medium text-red-500`}>
+                    닉네임은 한글 기준 최대 6자로 구성되어야합니다.
+                </label>
+
                 <InAppropriateNicknameNotice />
             </div>
         </CommonLayout>
@@ -39,7 +54,7 @@ function NickName() {
 
 const InAppropriateNicknameNotice = () => {
     return (
-        <div className="text-[#808080]">
+        <div className="mt-5 text-[#808080]">
             <CommonText fontSize="font-semibold" className="mb-3">
                 부적절한 닉네임
             </CommonText>
