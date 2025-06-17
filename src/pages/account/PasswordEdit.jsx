@@ -4,7 +4,7 @@ import { CommonText } from '../../components/common/customText';
 import CommonLayout from '../../layouts/CommonLayout';
 import { CommonBtn } from '../../components/common/customBtn';
 
-function Password() {
+function PasswordEdit() {
     const [email, setEmail] = useState('user0123@gmail.com');
 
     const [password, setPassword] = useState('');
@@ -139,4 +139,4 @@ const PasswordRuleNotice = () => {
     );
 };
 
-export default Password;
+export default PasswordEdit;
