@@ -21,6 +21,24 @@ export default defineConfig(({ command, mode }) => {
                         'Notion-Version': '2022-06-28',
                     },
                 },
+                '/api/drinks': {
+                    target: 'https://api.notion.com',
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/api\/drinks/, ''),
+                    headers: {
+                        Authorization: `Bearer ${env.DRINKS_NOTION_API_KEY}`,
+                        'Notion-Version': '2022-06-28',
+                    },
+                },
+                '/api/desserts': {
+                    target: 'https://api.notion.com',
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/api\/desserts/, ''),
+                    headers: {
+                        Authorization: `Bearer ${env.DESSERTS_NOTION_API_KEY}`,
+                        'Notion-Version': '2022-06-28',
+                    },
+                },
             },
         },
     };
