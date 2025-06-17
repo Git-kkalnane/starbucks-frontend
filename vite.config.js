@@ -12,12 +12,12 @@ export default defineConfig(({ command, mode }) => {
         server: {
             // TODO: 서버 개발 후 로직 변경 예정 (임시로 notion API사용)
             proxy: {
-                '/api': {
+                '/api/shops': {
                     target: 'https://api.notion.com',
                     changeOrigin: true,
-                    rewrite: (path) => path.replace(/^\/api/, ''),
+                    rewrite: (path) => path.replace(/^\/api\/shops/, ''),
                     headers: {
-                        Authorization: `Bearer ${env.VITE_NOTION_API_KEY}`,
+                        Authorization: `Bearer ${env.SHOPS_NOTION_API_KEY}`,
                         'Notion-Version': '2022-06-28',
                     },
                 },

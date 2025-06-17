@@ -23,7 +23,7 @@ export const shopService = {
     async fetchShops() {
         try {
             const response = await axios.post(
-                '/api/v1/databases/20ef1eb21fb180c3acc8f3089a79e719/query',
+                '/api/shops/v1/databases/20ef1eb21fb180c3acc8f3089a79e719/query',
                 {},
                 { headers: { 'Content-Type': 'application/json' } },
             );
