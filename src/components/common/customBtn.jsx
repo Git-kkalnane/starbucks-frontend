@@ -11,8 +11,10 @@ export function CommonBtn({
     paddingY = 'py-3',
     onClick,
     className = '',
+    children,
     disabled = false,
     weight = 'font-semibold',
+
 }) {
     return (
         <button
@@ -33,7 +35,7 @@ export function CommonBtn({
             onClick={onClick}
             disabled={disabled}
         >
-            {title}
+            {title || children}
         </button>
     );
 }

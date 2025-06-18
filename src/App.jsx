@@ -17,6 +17,7 @@ import ShopDetail from './pages/shop/ShopDetail';
 import Cart from './pages/Cart';
 import NotFound from './pages/NotFound';
 import MenuDetail from './pages/menu/MenuDetail';
+import MenuConfigurator from './pages/menu/MenuConfigurator';
 
 import './App.css';
 
@@ -42,6 +43,7 @@ function App() {
                     <Route path="/order/shop" element={<ShopList />} />
                     <Route path="/order/shop/:id" element={<ShopDetail />} />
                     <Route path="/order/menu/:id" element={<MenuDetail />} />
+                    <Route path="/order/menu/:id/configurator" element={<MenuConfigurator />} />
                 </Routes>
             </main>
         </div>
