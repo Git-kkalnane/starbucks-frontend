@@ -16,8 +16,8 @@ const QuantityControl = ({
         lg: 'w-10 h-10 text-lg',
     };
 
-    const buttonBaseClasses = 'rounded-full border flex items-center justify-center';
-    const buttonClasses = `${buttonBaseClasses} ${sizeClasses[size] || sizeClasses.md}`;
+    const baseStyle = 'rounded-full border flex items-center justify-center';
+    const buttonClasses = `${baseStyle} ${sizeClasses[size] || sizeClasses.md}`;
 
     return (
         <div className="flex items-center gap-1">
