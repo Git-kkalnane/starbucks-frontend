@@ -74,13 +74,17 @@ function Login() {
                 <Greeting className="mb-[80px]" />
 
                 {/* 로그인 폼 */}
-                <form className="w-full">
+                <form className="w-full" onSubmit={handleSubmit}>
+                    {/* 에러 메시지 표시 */}
+                    {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">{error}</div>}
+
                     <CommonTextInput
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        type="text"
-                        placeholder="아이디를 입력해 주세요"
+                        type="email"
+                        placeholder="이메일을 입력해 주세요"
                         containerClassName="mb-4"
+                        required
                     />
                     <CommonTextInput
                         value={password}
@@ -88,16 +92,20 @@ function Login() {
                         type="password"
                         placeholder="비밀번호를 입력해 주세요"
                         containerClassName="mt-4"
+                        required
                     />
-                    {/* 아이디 저장 & 아이디/비밀번호 찾기, TODO 있어야 할지 고민 */}
+
+                    {/* 아이디 저장 & 아이디/비밀번호 찾기 */}
                     <AccountOptions onFindAccountClick={() => navigate('/find-account')} />
 
                     <CommonBtn
-                        title="로그인"
+                        type="submit"
+                        title={isLoading ? '로그인 중...' : '로그인'}
                         bgColor="bg-starbucks-green"
                         textColor="text-white"
                         fullWidth={true}
                         className="mt-12 mb-2"
+                        disabled={isLoading}
                     />
                     <CommonBtn
                         title="회원가입"
