@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export const useSyrup = (initialSyrupOptions = [], defaultSyrupCount = 2) => {
+export const useSyrupCount = (initialSyrupOptions = [], defaultSyrupCount = 2) => {
     const [syrupOptions] = useState(Array.isArray(initialSyrupOptions) ? initialSyrupOptions : []);
     const [syrups, setSyrups] = useState(
         (Array.isArray(initialSyrupOptions) ? initialSyrupOptions : []).reduce(
@@ -56,4 +56,4 @@ export const useSyrup = (initialSyrupOptions = [], defaultSyrupCount = 2) => {
     };
 };
 
-export default useSyrup;
+export default useSyrupCount;
