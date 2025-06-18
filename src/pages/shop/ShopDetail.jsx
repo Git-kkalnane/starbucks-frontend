@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useUser } from '../../contexts/UserContext';
+import ConfirmLoginModal from '../../components/common/ConfirmLoginModal';
 import CommonLayout from '../../layouts/CommonLayout';
 import { CommonHeader } from '../../components/common/customHeader';
 import ShopImage from '../../components/shop/shop_detail/ShopImage';
@@ -9,15 +11,17 @@ import ShopHoursAndDirections from '../../components/shop/shop_detail/ShopHoursA
 import OrderTypeSelector from '../../components/shop/shop_detail/OrderTypeSelector';
 import { shopService } from '../../services/shopService';
 import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 
 function ShopDetail() {
+    const { state: userState } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
     const { storeId } = useParams();
     const [shopData, setShopData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
+    const [orderTypeTmp, setOrderTypeTmp] = useState(null);
 
     useEffect(() => {
         // If shop data is passed in location state, use it
@@ -51,6 +55,12 @@ function ShopDetail() {
     }, [storeId, location.state]);
 
     const handleOrderTypeSelect = (orderType) => {
+        if (!userState.isAuthenticated) {
+            setOrderTypeTmp(orderType);
+            setLoginModalOpen(true);
+            return;
+        }
+        // 로그인된 경우 기존 로직
         console.log('Selected order type:', orderType, 'for shop:', shopData?.storeId);
     };
 
@@ -97,6 +107,14 @@ function ShopDetail() {
             </div>
 
             <OrderTypeSelector onSelectOrderType={handleOrderTypeSelect} />
+            <ConfirmLoginModal
+                open={loginModalOpen}
+                onConfirm={() => {
+                    setLoginModalOpen(false);
+                    navigate('/login');
+                }}
+                onCancel={() => setLoginModalOpen(false)}
+            />
         </CommonLayout>
     );
 }
