@@ -12,6 +12,9 @@ export function CommonBtn({
     onClick,
     className = '',
     children,
+    disabled = false,
+    weight = 'font-semibold',
+
 }) {
     return (
         <button
@@ -21,7 +24,7 @@ export function CommonBtn({
         ${paddingY} ${paddingX}
         rounded-full
         font-sans
-        font-semibold
+        ${weight}
         cursor-pointer
         border border-[#01A862]
         transition duration-300 ease-in-out
@@ -30,6 +33,7 @@ export function CommonBtn({
         ${className}
       `}
             onClick={onClick}
+            disabled={disabled}
         >
             {title || children}
         </button>

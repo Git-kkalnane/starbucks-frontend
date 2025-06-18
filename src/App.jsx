@@ -3,10 +3,14 @@ import { Routes, Route } from 'react-router-dom';
 import Navigation from './navigation/Navigation';
 import Home from './pages/Home';
 import Pay from './pages/Pay';
+import Charge from './pages/Charge';
 import Order from './pages/Order';
 import Other from './pages/Other';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Account from './pages/account/Account';
+import NickNameEdit from './pages/account/NickNameEdit';
+import PasswordEdit from './pages/account/PasswordEdit';
 import MockPage from './pages/MockPage';
 import ShopList from './pages/shop/ShopList';
 import ShopDetail from './pages/shop/ShopDetail';
@@ -16,7 +20,6 @@ import MenuDetail from './pages/menu/MenuDetail';
 import MenuConfigurator from './pages/menu/MenuConfigurator';
 
 import './App.css';
-import Charge from './pages/Charge';
 
 function App() {
     return (
@@ -31,6 +34,9 @@ function App() {
                     <Route path="/other" element={<Other />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
+                    <Route path="/account" element={<Account />} />
+                    <Route path="/account/nickname" element={<NickNameEdit />} />
+                    <Route path="/account/password" element={<PasswordEdit />} />
                     <Route path="/mock" element={<MockPage />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="*" element={<NotFound />} />
