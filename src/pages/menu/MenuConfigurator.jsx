@@ -5,7 +5,7 @@ import CupSizeSelector from '../../components/menu/CupSizeSelector';
 import OptionsItem from '../../components/menu/OptionsItem';
 import ConfiguratorFooter from '../../components/menu/ConfiguratorFooter';
 import { CommonText } from '../../components/common/customText';
-import { useSyrup, useCoffee, useQuantity } from '../../hooks/order';
+import { useSyrupCount, useCoffee, useQuantity } from '../../hooks/order';
 
 // TODO: props로 전달받는 데이터로 변경
 const syrupOptions = [
@@ -25,7 +25,7 @@ const cupSizes = [
 
 const MenuConfigurator = ({ onClose }) => {
     const [cupSize, setCupSize] = React.useState('tall');
-    const { syrups, updateSyrup, calculateSyrupTotal } = useSyrup(syrupOptions, 2);
+    const { syrups, updateSyrup, calculateSyrupTotal } = useSyrupCount(syrupOptions, 2);
     const { espressoShots, updateEspressoShots, calculateCoffeePrice } = useCoffee();
     const { quantity, updateQuantity } = useQuantity();
 
