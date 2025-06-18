@@ -12,7 +12,6 @@ const ConfiguratorFooter = ({ quantity, onQuantityChange, totalPrice, onAddToCar
                     onIncrease={() => onQuantityChange(1)}
                     onDecrease={() => onQuantityChange(-1)}
                     minValue={1}
-                    size="md"
                 />
                 <CommonText fontSize="text-2xl" bold={true} className="ml-2 px-6 text-black">
                     {totalPrice.toLocaleString()}원
