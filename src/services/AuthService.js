@@ -125,7 +125,7 @@ const AuthService = {
                 // 액세스 토큰은 메모리나 세션 스토리지에 저장
                 AuthService.setAuthToken(accessToken);
                 AuthService.setUserInfo(user);
-                return { user, accessToken };
+                return user;
             }
 
             throw new Error('Invalid response from server');
@@ -150,26 +150,15 @@ const AuthService = {
         }
     },
 
-    // TODO 프론트에서 토큰 유효성 검사 로직을 구현할 것인지 생각
-    // 토큰 유효성 검사
-    async validateToken() {
-        const token = sessionStorage.getItem('accessToken');
-        if (!token) return false;
-
+    // 현재 사용자 정보 가져오기
+    async getCurrentUser() {
         try {
-            // 토큰 유효성 검사 (만료 시간 확인)
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const isTokenValid = payload.exp * 1000 > Date.now();
-
-            // 토큰이 유효하면 true 반환
-            if (isTokenValid) return true;
-
-            // 토큰이 만료되었으면 리프레시 토큰으로 갱신 시도
-            const newToken = await this.refreshAccessToken();
-            return !!newToken;
+            const response = await api.get('/auth/user');
+            const user = response.data;
+            return user;
         } catch (error) {
-            console.error('토큰 검증 실패:', error);
-            return false;
+            console.error('Failed to get current user:', error);
+            return null;
         }
     },
 };
