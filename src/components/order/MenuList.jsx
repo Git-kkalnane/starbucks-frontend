@@ -1,8 +1,23 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const MenuItem = ({ item, className }) => {
+    const navigate = useNavigate();
+
+    const handleItemClick = () => {
+        navigate(`/order/menu/${item.id}`, {
+            state: { menuItem: item }
+        });
+    };
+
     return (
-        <div className={`flex py-2 border-b border-gray-100 ${className}`}>
+        <div
+            className={`flex py-2 border-b border-gray-100 ${className} cursor-pointer hover:bg-gray-50`}
+            onClick={handleItemClick}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === 'Enter' && handleItemClick()}
+        >
             <div className="w-24 h-24 rounded-full bg-gray-100 mr-4 flex-shrink-0">
                 <img
                     src={typeof item.img === 'string' ? item.img : item.img?.hot || item.img?.cold || ''}
