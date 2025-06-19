@@ -9,6 +9,7 @@ export function CommonTextInput({
     focusColor = '#22c55e',
     errorColor = '#ef4444',
     hasError = false,
+    required = false,
     onChange = () => {},
     value = '',
     maxLength = 25,
@@ -21,7 +22,8 @@ export function CommonTextInput({
                 type={type}
                 placeholder={placeholder}
                 value={value}
-                maxLength={maxLength} // 여기서 제한 걸어줌
+                required={required}
+                maxLength={maxLength}
                 onChange={(e) => onChange(e)}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}

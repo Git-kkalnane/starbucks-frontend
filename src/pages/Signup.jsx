@@ -5,12 +5,22 @@ import Logo from '../components/common/Logo';
 import { CommonTextInput } from '../components/common/TextInput';
 import { CommonBtn } from '../components/common/customBtn';
 import { useState } from 'react';
+import useAuthRedirect from '../hooks/useAuthRedirect';
+import { useUser } from '../contexts/UserContext';
 
 function Signup() {
     const navigate = useNavigate();
+    const { state } = useUser();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    // 이미 로그인된 상태면 홈으로 리다이렉트
+    useAuthRedirect({
+        requireAuth: false, // 로그인 페이지는 인증이 필요 없음
+        redirectTo: '/',
+        authState: state,
+    });
 
     return (
         <CommonLayout>
