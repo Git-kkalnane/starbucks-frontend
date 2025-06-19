@@ -21,14 +21,13 @@ import React from 'react';
 export function CommonText({
     children,
     fontSize = 'text-base',
-    bold = false,
     weight = 'font-normal',
     multiline = false,
     className = '',
 }) {
     return (
         <p
-            className={`font-sans ${fontSize} ${bold ? 'font-bold' : 'font-normal'} ${weight} ${
+            className={`font-sans ${fontSize} ${weight} ${
                 multiline ? 'whitespace-normal break-words' : 'whitespace-nowrap overflow-hidden text-ellipsis'
             } ${className}`}
         >
