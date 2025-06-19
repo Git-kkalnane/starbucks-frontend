@@ -7,7 +7,7 @@ function TemperatureToggle({ isIced, setIsIced, className }) {
         >
             {/* Background Slider */}
             <motion.div
-                className="absolute inset-0 bg-white border border-gray-100 border-[0.5px] shadow-sm rounded-full"
+                className="absolute inset-0 bg-white border-gray-100 border-[0.5px] shadow-sm rounded-full"
                 initial={false}
                 animate={{
                     left: isIced ? '50%' : '0%',
