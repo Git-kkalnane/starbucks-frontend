@@ -6,6 +6,7 @@ import OptionsItem from '../../components/menu/OptionsItem';
 import ConfiguratorFooter from '../../components/menu/ConfiguratorFooter';
 import { CommonText } from '../../components/common/customText';
 import { useSyrupCount, useCoffee, useQuantity } from '../../hooks/order';
+import { useLocation } from 'react-router-dom';
 
 // TODO: props로 전달받는 데이터로 변경
 const syrupOptions = [
@@ -23,7 +24,12 @@ const cupSizes = [
     { id: 'venti', name: 'Venti', volume: '591ml', iconSize: 'w-10 h-10' },
 ];
 
+// TODO 백엔드 시럽을 어떻게 추가할지 의논 필요
 const MenuConfigurator = ({ onClose }) => {
+    const location = useLocation();
+    const { state } = location;
+    const menuItem = state?.menuItem || {};
+
     const [cupSize, setCupSize] = React.useState('tall');
     const { syrups, updateSyrup, calculateSyrupTotal } = useSyrupCount(syrupOptions, 2);
     const { espressoShots, updateEspressoShots, calculateCoffeePrice } = useCoffee();
@@ -38,7 +44,7 @@ const MenuConfigurator = ({ onClose }) => {
     };
 
     const calculateTotal = () => {
-        let total = 4500; // Base price for tall size
+        let total = menuItem.price; // Base price for tall size
         if (cupSize === 'grande') total += 500;
         if (cupSize === 'venti') total += 1000;
 
@@ -74,12 +80,24 @@ const MenuConfigurator = ({ onClose }) => {
     return (
         <CommonLayout>
             <div className="w-full max-w-md">
-                {/* Header */}
-                <section className="flex justify-between items-center px-2 pt-2">
-                    <div></div>
-                    <button onClick={onClose} className="p-1">
-                        <IoClose className="w-7 h-7" />
-                    </button>
+                {/* Header with Menu Info */}
+                <section className="p-4 border-b border-gray-100">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h1 className="text-xl font-bold text-gray-900">{menuItem?.koreanName || '메뉴 선택'}</h1>
+                            {menuItem?.englishName && (
+                                <p className="text-sm text-gray-500 mt-1">{menuItem.englishName}</p>
+                            )}
+                            {menuItem?.price && (
+                                <p className="text-base font-medium text-gray-900 mt-1">
+                                    {menuItem.price.toLocaleString()}원
+                                </p>
+                            )}
+                        </div>
+                        <button onClick={onClose} className="p-1 text-gray-500 hover:text-gray-700" aria-label="Close">
+                            <IoClose className="w-6 h-6" />
+                        </button>
+                    </div>
                 </section>
 
                 <div className="px-5">

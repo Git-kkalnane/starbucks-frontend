@@ -95,7 +95,16 @@ function MenuDetail() {
                     <div className="max-w-md mx-auto w-full">
                         <OrderActionBtn
                             price={menuItem.price}
-                            onOrder={() => console.log('Order placed:', { ...menuItem, isIced })}
+                            onOrder={() => {
+                                navigate(`/order/menu/${menuItem.id}/configurator`, {
+                                    state: {
+                                        menuItem: {
+                                            ...menuItem,
+                                            isIced,
+                                        }
+                                    }
+                                });
+                            }}
                             className="w-full"
                         />
                     </div>
