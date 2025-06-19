@@ -2,11 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import StoreSelectionBanner from '../common/StoreSelectionBanner';
 import { HiShoppingBag } from 'react-icons/hi2';
+import { useUser } from '../../contexts/UserContext';
 
 import './styles/OrderNavigationBar.css';
 
 const OrderNavigationBar = ({ itemCount, className }) => {
     const navigate = useNavigate();
+    const { state: userState } = useUser();
 
     const handleCartClick = () => {
         navigate('/cart');
@@ -16,7 +18,10 @@ const OrderNavigationBar = ({ itemCount, className }) => {
         <section
             className={`order-navigation-bar w-full bg-[#2E2926] flex justify-between items-center px-4 ${className}`}
         >
-            <StoreSelectionBanner title="주문할 매장을 선택해주세요" className="w-[calc(100%-4rem)]" />
+            <StoreSelectionBanner
+                title={userState.selectedStore ? userState.selectedStore.name : '주문할 매장을 선택해주세요'}
+                className="w-[calc(100%-4rem)]"
+            />
             <div
                 className="relative cursor-pointer"
                 onClick={handleCartClick}
