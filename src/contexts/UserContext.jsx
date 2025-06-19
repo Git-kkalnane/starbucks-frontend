@@ -1,6 +1,8 @@
 import { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import AuthService from '../services/AuthService';
-import { userReducer, initialState, userActions } from '../reducers/userReducer';
+import { userReducer, initialState } from '../reducers/userReducer';
+import { starbucksStorage } from '../_utils/starbucksStorage';
+import userActions from '../actions/userActions';
 
 const UserContext = createContext();
 
@@ -8,52 +10,41 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
     const [state, dispatch] = useReducer(userReducer, initialState);
 
-    // 초기 로드 시 사용자 인증 상태 확인 (한 번만 실행)
+    // 페이지 로드 시 세션 복원
     useEffect(() => {
-        let isMounted = true;
-
-        const checkAuth = async () => {
+        const restoreSession = async () => {
             try {
-                const isValid = await AuthService.validateToken();
-                if (isValid) {
-                    const user = await AuthService.getCurrentUser();
-                    if (isMounted) {
+                const token = starbucksStorage.getAccessToken();
+                if (token) {
+                    const user = starbucksStorage.getUser();
+                    if (user) {
                         dispatch(userActions.loginSuccess(user));
-                    }
-                } else {
-                    if (isMounted) {
-                        dispatch(userActions.logout());
+
+                        // 저장된 장바구니, 매장 정보 복원
+                        const cart = starbucksStorage.getCart();
+                        const store = starbucksStorage.getStore();
+                        const orders = starbucksStorage.getOrders();
+
+                        if (cart) dispatch(userActions.setCart(cart));
+                        if (store) dispatch(userActions.setSelectedStore(store));
+                        if (orders) dispatch(userActions.setActiveOrders(orders));
                     }
                 }
             } catch (error) {
-                console.error('인증 확인 실패:', error);
-                if (isMounted) {
-                    dispatch(userActions.logout());
-                }
-            } finally {
-                if (isMounted) {
-                    dispatch(userActions.setLoading(false));
-                }
+                console.error('세션 복원 중 오류 발생:', error);
+                dispatch(userActions.logout());
             }
         };
 
-        // 이미 로그인 상태가 아니라면 인증 확인
-        if (!state.isAuthenticated) {
-            checkAuth();
-        } else {
-            dispatch(userActions.setLoading(false));
-        }
-
-        return () => {
-            isMounted = false;
-        };
-    }, [state.isAuthenticated]); // isAuthenticated가 변경될 때만 실행
+        restoreSession();
+    }, []);
 
     // Action creators
     const login = useCallback(async (email, password) => {
         try {
             dispatch(userActions.setLoading(true));
             const user = await AuthService.login(email, password);
+            // 로그인 성공시 userContext에 정보 저장
             dispatch(userActions.loginSuccess(user));
             return true;
         } catch (error) {
