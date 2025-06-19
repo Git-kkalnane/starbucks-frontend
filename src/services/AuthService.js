@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { starbucksStorage } from '../_utils/starbucksStorage';
 
 // TODO env 설정로 변경 예정
 const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
@@ -47,7 +48,7 @@ api.interceptors.response.use(
                 );
 
                 const { accessToken } = response.data;
-                sessionStorage.setItem('accessToken', accessToken);
+                starbucksStorage.setAccessToken(accessToken);
 
                 // 원래 요청을 새로운 토큰으로 재시도
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -68,24 +69,23 @@ const AuthService = {
     // 토큰 저장
     setAuthToken(token) {
         if (token) {
-            sessionStorage.setItem('accessToken', token);
+            starbucksStorage.setAccessToken(token);
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
     },
 
     setUserInfo(user) {
         if (user) {
-            sessionStorage.setItem('user', JSON.stringify(user));
+            starbucksStorage.setUser(user);
         }
     },
 
     // 인증 정보 초기화
     clearAuth() {
-        sessionStorage.removeItem('accessToken');
-        sessionStorage.removeItem('user');
+        starbucksStorage.clearAll();
         delete api.defaults.headers.common['Authorization'];
 
-        // 로그아웃 API 호출 (백엔드에서 리프레시 토큰 무효화)
+        // TODO 로그아웃 API 호출 (백엔드에서 리프레시 토큰만 무효화)
         api.post('/auth/logout').catch((error) => {
             console.error('로그아웃 중 오류 발생:', error);
         });
