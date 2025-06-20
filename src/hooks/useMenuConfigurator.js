@@ -25,7 +25,7 @@ export const useCupSizes = (menuItem) => {
 
 export const useCupSize = (availableCupSizes) => {
     const [cupSize, setCupSize] = useState(availableCupSizes[0]?.id || 'tall');
-    
+
     const calculateCupSizePrice = (selectedSize, availableSizes, pricePerSizeUp = 500) => {
         const sizeOrder = ['solo', 'doppio', 'short', 'tall', 'grande', 'venti'];
         const selectedSizeIndex = sizeOrder.indexOf(selectedSize);
@@ -43,16 +43,30 @@ export const useCupSize = (availableCupSizes) => {
     return {
         cupSize,
         setCupSize,
-        calculateCupSizePrice
+        calculateCupSizePrice,
     };
 };
 
-export const useOrderActions = (menuItem, { cupSize, availableCupSizes, calculateCupSizePrice, syrups, calculateSyrupTotal, espressoShots, calculateCoffeePrice, quantity }) => {
+export const useOrderActions = (
+    menuItem,
+    {
+        cupSize,
+        availableCupSizes,
+        calculateCupSizePrice,
+        options,
+        calculateOptionsTotal,
+        espressoShots,
+        calculateCoffeePrice,
+        quantity,
+    },
+) => {
     const calculateTotal = () => {
         let total = menuItem.price;
         total += calculateCupSizePrice(cupSize, availableCupSizes);
         total += calculateCoffeePrice();
-        total += calculateSyrupTotal();
+        // Use calculateOptionsTotal if provided, otherwise default to 0
+        const optionsTotal = calculateOptionsTotal ? calculateOptionsTotal() : 0;
+        total += optionsTotal;
         return total * quantity;
     };
 
@@ -76,7 +90,7 @@ export const useOrderActions = (menuItem, { cupSize, availableCupSizes, calculat
         console.log('Order placed:', {
             cupSize,
             espressoShots,
-            options: syrups,
+            options,
             quantity,
             price: calculateTotal(),
         });
@@ -85,6 +99,6 @@ export const useOrderActions = (menuItem, { cupSize, availableCupSizes, calculat
     return {
         calculateTotal,
         handleAddToCart,
-        handleOrder
+        handleOrder,
     };
 };
