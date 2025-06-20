@@ -4,16 +4,23 @@ import { useNavigate } from 'react-router-dom';
 
 function ShopItem({ shop, className = '' }) {
     const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/order/shop/${shop.storeId}`, {
+            state: { shop },
+        });
+    };
+
     return (
         <div
             className={`flex py-4 border-b border-gray-100 items-start ${className} cursor-pointer hover:bg-gray-50`}
-            onClick={() => navigate(`/order/shop/${shop.storeId}`)}
+            onClick={handleClick}
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    navigate(`/order/shop/${shop.storeId}`);
+                    handleClick();
                 }
             }}
         >
@@ -39,6 +46,7 @@ function ShopListPanel({ shops, className = '' }) {
     if (!shops || shops.length === 0) {
         return <div className="text-center py-8 text-gray-500">매장이 없습니다.</div>;
     }
+    console.log(shops);
 
     return (
         <section className={`py-4 ${className}`}>

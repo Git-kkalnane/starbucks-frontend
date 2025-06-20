@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { starbucksStorage } from '../_utils/starbucksStorage';
 
 // TODO env 설정로 변경 예정
 const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
@@ -47,7 +48,7 @@ api.interceptors.response.use(
                 );
 
                 const { accessToken } = response.data;
-                sessionStorage.setItem('accessToken', accessToken);
+                starbucksStorage.setAccessToken(accessToken);
 
                 // 원래 요청을 새로운 토큰으로 재시도
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
@@ -68,24 +69,23 @@ const AuthService = {
     // 토큰 저장
     setAuthToken(token) {
         if (token) {
-            sessionStorage.setItem('accessToken', token);
+            starbucksStorage.setAccessToken(token);
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         }
     },
 
     setUserInfo(user) {
         if (user) {
-            sessionStorage.setItem('user', JSON.stringify(user));
+            starbucksStorage.setUser(user);
         }
     },
 
     // 인증 정보 초기화
     clearAuth() {
-        sessionStorage.removeItem('accessToken');
-        sessionStorage.removeItem('user');
+        starbucksStorage.clearAll();
         delete api.defaults.headers.common['Authorization'];
 
-        // 로그아웃 API 호출 (백엔드에서 리프레시 토큰 무효화)
+        // TODO 로그아웃 API 호출 (백엔드에서 리프레시 토큰만 무효화)
         api.post('/auth/logout').catch((error) => {
             console.error('로그아웃 중 오류 발생:', error);
         });
@@ -125,7 +125,7 @@ const AuthService = {
                 // 액세스 토큰은 메모리나 세션 스토리지에 저장
                 AuthService.setAuthToken(accessToken);
                 AuthService.setUserInfo(user);
-                return { user, accessToken };
+                return user;
             }
 
             throw new Error('Invalid response from server');
@@ -150,26 +150,15 @@ const AuthService = {
         }
     },
 
-    // TODO 프론트에서 토큰 유효성 검사 로직을 구현할 것인지 생각
-    // 토큰 유효성 검사
-    async validateToken() {
-        const token = sessionStorage.getItem('accessToken');
-        if (!token) return false;
-
+    // 현재 사용자 정보 가져오기
+    async getCurrentUser() {
         try {
-            // 토큰 유효성 검사 (만료 시간 확인)
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            const isTokenValid = payload.exp * 1000 > Date.now();
-
-            // 토큰이 유효하면 true 반환
-            if (isTokenValid) return true;
-
-            // 토큰이 만료되었으면 리프레시 토큰으로 갱신 시도
-            const newToken = await this.refreshAccessToken();
-            return !!newToken;
+            const response = await api.get('/auth/user');
+            const user = response.data;
+            return user;
         } catch (error) {
-            console.error('토큰 검증 실패:', error);
-            return false;
+            console.error('Failed to get current user:', error);
+            return null;
         }
     },
 };
