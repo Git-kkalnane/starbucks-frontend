@@ -69,12 +69,15 @@ function ShopDetail() {
                 name: shopData.name,
                 timestamp: new Date().toISOString(),
             };
-
-            // 스토리지에 저장 (단일 객체로 저장)
-            starbucksStorage.setStore(currentStore);
-            // 상태 업데이트
-            userActions.setSelectedStore(currentStore);
-            navigate('/order');
+            try {
+                // 스토리지에 저장 (단일 객체로 저장)
+                starbucksStorage.setStore(currentStore);
+                // 상태 업데이트
+                userActions.setSelectedStore(currentStore);
+                navigate('/order');
+            } catch (error) {
+                console.error('Error setting store:', error);
+            }
         }
 
         console.log('Selected order type:', orderType, 'for shop:', shopData?.storeId);
