@@ -88,17 +88,23 @@ function MenuDetail() {
     }
 
     console.log(`${menuItem.koreanName} temperatureOption:`, initTemperatureOption);
+    console.log(`${menuItem.koreanName} temperatureOption:`, menuItem);
 
     return (
         <CommonLayout className="flex flex-col min-h-screen">
             {/* Main content area with minimum height and flexible growth */}
             <div className="flex-1 min-h-0 flex flex-col">
                 <div className="overflow-y-auto flex-1">
-                    <MenuHeader
-                        imageUrl={isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || ''}
-                        name={menuItem.koreanName}
-                        onBack={() => navigate(-1)}
-                    />
+                    {menuItem.itemType === 'beverage' && (
+                        <MenuHeader
+                            imageUrl={isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || ''}
+                            name={menuItem.koreanName}
+                            onBack={() => navigate(-1)}
+                        />
+                    )}
+                    {menuItem.itemType === 'dessert' && (
+                        <MenuHeader imageUrl={menuItem.img} name={menuItem.koreanName} onBack={() => navigate(-1)} />
+                    )}
                     <div className="px-4 sm:px-6 pb-32">
                         <MenuInfo
                             name={menuItem.koreanName}
@@ -108,22 +114,25 @@ function MenuDetail() {
                             category={menuItem.category}
                             size={menuItem.size}
                         />
-                        <div className="mt-4 mb-24">
-                            {initTemperatureOption === 'Ice only' || initTemperatureOption === 'Hot only' ? (
-                                <TemperatureDisplay
-                                    isIced={initTemperatureOption === 'Ice only'}
-                                    isActive={true}
-                                    className="max-w-xs mx-auto"
-                                />
-                            ) : (
-                                <TemperatureToggle
-                                    isIced={isIced}
-                                    setIsIced={setIsIced}
-                                    disabled={!menuItem.isCoffee}
-                                    className={!menuItem.isCoffee ? 'opacity-70' : ''}
-                                />
-                            )}
-                        </div>
+                        {menuItem.itemType === 'beverage' && (
+                            <div className="mt-4 mb-24">
+                                {initTemperatureOption === 'Ice only' || initTemperatureOption === 'Hot only' ? (
+                                    <TemperatureDisplay
+                                        isIced={initTemperatureOption === 'Ice only'}
+                                        isActive={true}
+                                        className="max-w-xs mx-auto"
+                                    />
+                                ) : (
+                                    <TemperatureToggle
+                                        isIced={isIced}
+                                        setIsIced={setIsIced}
+                                        disabled={!menuItem.isCoffee}
+                                        className={!menuItem.isCoffee ? 'opacity-70' : ''}
+                                    />
+                                )}
+                            </div>
+                        )}
+                        {menuItem.itemType === 'dessert' && <div className="mt-4 mb-24"></div>}
                     </div>
                 </div>
 
