@@ -4,9 +4,9 @@ import QuantityControl from '../common/QuantityControl';
 
 const OptionsItem = ({
     title,
-    items,
-    selectedValues,
-    onValueChange,
+    items = [],
+    selectedValues = {},
+    onValueChange = () => {},
     minValue = 0,
     maxValue = Infinity,
     disabled = false,
