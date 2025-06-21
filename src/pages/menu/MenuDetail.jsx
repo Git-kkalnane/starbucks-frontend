@@ -139,6 +139,7 @@ function MenuDetail() {
                                             ...menuItem,
                                             isIced,
                                         },
+                                        img: isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || '',
                                     },
                                 });
                             }}
