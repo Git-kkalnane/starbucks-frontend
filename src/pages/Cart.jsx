@@ -60,9 +60,11 @@ function Cart() {
     };
     // 선택삭제
     const removeSelected = () => {
+        if (selected.length === 0) return;
+        
         setCart((prev) => prev.filter((item) => !selected.includes(item.id)));
+        actions.removeFromCart(selected);
         setSelected([]);
-        actions.removeSelected();
     };
     const removeAll = () => {
         setCart([]);
