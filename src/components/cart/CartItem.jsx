@@ -13,13 +13,13 @@ const CartItem = ({ item, isSelected, onToggleSelect, onRemove, onChangeQty, cla
         </button>
         <div className="flex flex-row items-start pl-6 pr-5 pt-10 pb-3">
             <div className="w-24 h-24 bg-[#f3e6d7] rounded-full flex-shrink-0 mr-5 flex items-center justify-center text-[#c8b7a6] text-lg overflow-hidden">
-                <img src={item.img} alt={item.name} className="object-cover w-full h-full" />
+                <img src={item.img} alt={item.item.koreanName} className="object-cover w-full h-full" />
             </div>
             <div className="flex-1 min-w-0">
-                <div className="font-bold text-[#222] text-base truncate">{item.name}</div>
-                <div className="text-xs text-disabled-string mb-1 truncate">{item.eng}</div>
+                <div className="font-bold text-[#222] text-base truncate">{item.item.koreanName}</div>
+                <div className="text-xs text-disabled-string mb-1 truncate">{item.item.englishName}</div>
                 <div className="flex flex-row items-center justify-between text-sm text-[#a6a6a6] font-medium mb-2">
-                    {item.option} <span className="ml-2 ">{item.price.toLocaleString()}원</span>
+                    {item.option} <span className="ml-2 ">{item.totalPrice.toLocaleString()}원</span>
                 </div>
                 <span className="my-4 underline cursor-pointer text-[#98714e] text-sm">옵션 변경</span>
                 <div className="my-2 flex flex-row items-center justify-between">
@@ -30,7 +30,7 @@ const CartItem = ({ item, isSelected, onToggleSelect, onRemove, onChangeQty, cla
                         >
                             -
                         </button>
-                        <span className="font-bold text-base w-6 text-center text-[#222]">{item.qty}</span>
+                        <span className="font-bold text-base w-6 text-center text-[#222]">{item.quantity}</span>
                         <button
                             className="w-7 h-7 rounded-full bg-starbucks-green text-lg font-bold flex items-start justify-center text-white border-[2px] border-white"
                             onClick={() => onChangeQty(1)}
@@ -39,7 +39,7 @@ const CartItem = ({ item, isSelected, onToggleSelect, onRemove, onChangeQty, cla
                         </button>
                     </div>
                     <span className="font-bold text-black text-lg mt-2">
-                        {(item.price * item.qty).toLocaleString()}원
+                        {(item.totalPrice * item.quantity).toLocaleString()}원
                     </span>
                 </div>
             </div>
