@@ -8,7 +8,7 @@ import { CommonText } from '../../components/common/customText';
 import { useSyrupCount, useCoffee, useQuantity } from '../../hooks/order';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
-
+import { starbucksStorage } from '../../_utils/starbucksStorage';
 // TODO: props로 전달받는 데이터로 변경
 const syrupOptions = [
     { id: 'vanilla', name: '바닐라 시럽', price: 500 },
@@ -35,6 +35,7 @@ const MenuConfigurator = () => {
     const location = useLocation();
     const { state } = location;
     const menuItem = state?.menuItem || {};
+    const currentImg = state?.img || '';
 
     // Filter available cup sizes based on menuItem.cupSize
     const availableCupSizes = React.useMemo(() => {
@@ -92,26 +93,26 @@ const MenuConfigurator = () => {
         // 시럽 가격 추가
         total += calculateSyrupTotal();
 
-        return total * quantity;
+        return total;
     };
 
     const handleAddToCart = () => {
         console.log('User state:', userState);
         const orderData = {
-            id: menuItem.id,
-            koreanName: menuItem.koreanName,
-            englishName: menuItem.englishName,
+            id: Date.now(), // (백엔드에서 저장된 id, 프론트에 처음 생성시 0으로 고정)
+            item: menuItem,
+            img: currentImg,
             itemType: menuItem.itemType,
-            temperatureOption: menuItem.temperatureOption ?? '',
+            temperatureOption: menuItem.temperatureOption,
+            options: menuItem.options,
             cupSize,
-            options: menuItem.options ?? [], // TOD: 옵션추가 기능 추가하기
             quantity,
             totalPrice: calculateTotal(),
-            itemPrice: menuItem.price,
         };
         console.log('Added to cart:', orderData);
         // OrderItem을 저장
         userActions.addToCart(orderData);
+        starbucksStorage.addCart(orderData);
         // navigate(-1);
     };
 
