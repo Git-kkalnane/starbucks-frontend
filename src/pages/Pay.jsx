@@ -1,8 +1,10 @@
 import React from 'react';
 import CommonLayout from '../components/layouts/CommonLayout';
-import { ColumnHeader, CommonHeader } from '../components/common/customHeader';
+import { ColumnHeader } from '../components/common/customHeader';
 import { Card } from '../components/pay/Card';
 import { Link } from 'react-router-dom';
+import useAuthRedirect from '../hooks/useAuthRedirect';
+import { useUser } from '../contexts/UserContext';
 
 const cardInfo1 = {
     number: '1928-0056-3394-2018',
@@ -15,6 +17,11 @@ const cardInfo2 = {
 };
 
 function Pay() {
+    const { state: userState } = useUser();
+    useAuthRedirect({
+        requireAuth: true,
+        authState: userState,
+    });
     return (
         <CommonLayout className="pb-10">
             <ColumnHeader title="Pay" bgColor="white" className="pt-16 shadow-[0_2px_3px_-1px_rgba(0,0,0,0.3)]" />

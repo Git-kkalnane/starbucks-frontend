@@ -8,12 +8,19 @@ import { useNavigate } from 'react-router-dom';
 import CartEmptyView from '../components/cart/CartEmptyView';
 import { useUser } from '../contexts/UserContext';
 import { starbucksStorage } from '../store/starbucksStorage';
+import useAuthRedirect from '../hooks/useAuthRedirect';
 
 function Cart() {
     const { state, actions } = useUser();
 
     const [cart, setCart] = useState(state.cart || []);
     const [selected, setSelected] = useState([]);
+
+    useAuthRedirect({
+        requireAuth: true,
+        redirectTo: '/login',
+        authState: state,
+    });
 
     const isAllSelected = cart.length > 0 && selected.length === cart.length;
     const selectedTotalQty =
