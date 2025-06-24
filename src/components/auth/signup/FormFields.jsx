@@ -1,4 +1,4 @@
-import { CommonTextInput } from '../common/TextInput';
+import { CommonTextInput } from '../../common/TextInput';
 
 const FormFields = ({ formData, errors, handleChange, handleBlur }) => {
     return (

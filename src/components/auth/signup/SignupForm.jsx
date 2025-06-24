@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CommonBtn } from '../common/customBtn';
+import { CommonBtn } from '../../common/customBtn';
 import { validateField, validateForm } from './validator';
 import FormFields from './FormFields';
 import TermsAgreement from './TermsAgreement';
