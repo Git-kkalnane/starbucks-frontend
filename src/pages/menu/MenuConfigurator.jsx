@@ -1,9 +1,9 @@
 import React from 'react';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 import { IoClose } from 'react-icons/io5';
-import CupSizeSelector from '../../components/menu/CupSizeSelector';
-import OptionsItem from '../../components/menu/OptionsItem';
-import ConfiguratorFooter from '../../components/menu/ConfiguratorFooter';
+import CupSizeSelector from '../../components/menu/menu_configurator/CupSizeSelector';
+import OptionsItem from '../../components/menu/menu_configurator/OptionsItem';
+import ConfiguratorFooter from '../../components/menu/menu_configurator/ConfiguratorFooter';
 import { CommonText } from '../../components/common/customText';
 import { useOptionCount, useCoffee, useQuantity } from '../../hooks/order';
 import { useLocation, useNavigate } from 'react-router-dom';

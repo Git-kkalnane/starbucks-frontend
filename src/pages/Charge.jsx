@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ColumnHeader } from '../components/common/customHeader';
 import { CommonText } from '../components/common/customText';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 import { UnitSelector } from '../components/charge/UnitSelector';
 import { ChargeModal } from '../components/charge/ChargeModal';
 import { CommonBtn } from '../components/common/customBtn';

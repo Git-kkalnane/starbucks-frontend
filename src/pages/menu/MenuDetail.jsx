@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import CommonLayout from '../../layouts/CommonLayout';
-import MenuHeader from '../../components/menu/MenuHeader';
-import MenuInfo from '../../components/menu/MenuInfo';
+import CommonLayout from '../../components/layouts/CommonLayout';
+import MenuHeader from '../../components/menu/menu_detail/MenuHeader';
+import MenuInfo from '../../components/menu/menu_detail/MenuInfo';
 import OrderActionBtn from '../../components/menu/menu_detail/MenuDetailFooter';
 import TemperatureToggle from '../../components/menu/menu_detail/TemperatureToggle';
 import TemperatureDisplay from '../../components/menu/menu_detail/TemperatureDisplay';

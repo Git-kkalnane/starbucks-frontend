@@ -1,9 +1,9 @@
 import React from 'react';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 import { ColumnHeader } from '../components/common/customHeader';
-import AuthPanel from '../components/other/auth_panel/AuthPanel';
-import ServicePanel from '../components/other/service_panel/ServicePanel';
-import StoreLocation from '../components/other/store_location/StoreLocation';
+import AuthPanel from '../components/other/AuthPanel';
+import ServicePanel from '../components/other/ServicePanel';
+import StoreLocation from '../components/other/StoreLocation';
 import ReceiptSVG from '../assets/icons/receipt.svg?react';
 import LockSVG from '../assets/icons/lock.svg?react';
 import AccountSVG from '../assets/icons/account.svg?react';

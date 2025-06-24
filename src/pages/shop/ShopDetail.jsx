@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import ConfirmLoginModal from '../../components/common/ConfirmationModal';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 import { CommonHeader } from '../../components/common/customHeader';
 import ShopImage from '../../components/shop/shop_detail/ShopImage';
 import ShopBasicInfo from '../../components/shop/shop_detail/ShopBasicInfo';
@@ -11,7 +11,7 @@ import ShopHoursAndDirections from '../../components/shop/shop_detail/ShopHoursA
 import OrderTypeSelector from '../../components/shop/shop_detail/OrderTypeSelector';
 import { shopService } from '../../services/shopService';
 import { useParams } from 'react-router-dom';
-import { starbucksStorage } from '../../_utils/starbucksStorage';
+import { starbucksStorage } from '../../store/starbucksStorage';
 
 function ShopDetail() {
     const { state: userState, actions: userActions } = useUser();

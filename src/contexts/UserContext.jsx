@@ -1,8 +1,8 @@
 import { createContext, useContext, useReducer, useCallback, useEffect } from 'react';
 import AuthService from '../services/AuthService';
-import { userReducer, initialState } from '../reducers/userReducer';
-import { starbucksStorage } from '../_utils/starbucksStorage';
-import userActions from '../actions/userActions';
+import { userReducer, initialState } from '../store/user/userReducer';
+import { starbucksStorage } from '../store/starbucksStorage';
+import userActions from '../store/user/userActions';
 
 const UserContext = createContext();
 

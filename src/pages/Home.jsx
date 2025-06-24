@@ -1,9 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import Showcase from '../components/home/showcase/Showcase';
-import AuthPanel from '../components/home/auth_panel/AuthPanel';
+import Showcase from '../components/home/Showcase';
+import AuthPanel from '../components/home/AuthPanel';
 import { CommonHeader } from '../components/common/customHeader';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 
 const carouselItems = [
     {
