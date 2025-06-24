@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommonText } from '../common/customText';
+import { CommonText } from '../../common/customText';
 
 const OrderTrackerProgress = ({ currentStep, className = '' }) => {
     const steps = [

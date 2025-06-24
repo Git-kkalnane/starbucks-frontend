@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CommonLayout from '../../components/layouts/CommonLayout';
-import OrderTrackerIntro from '../../components/order_tracker/OrderTrackerIntro';
-import OrderTrackerProgress from '../../components/order_tracker/OrderTrackerProgress';
-import OrderSummary from '../../components/order_tracker/OrderSummary';
+import OrderTrackerIntro from '../../components/order/order_tracker/OrderTrackerIntro';
+import OrderTrackerProgress from '../../components/order/order_tracker/OrderTrackerProgress';
+import OrderSummary from '../../components/order/order_tracker/OrderSummary';
 
 const orderMsg = {
     title: '주문을 확인하고 있어요',

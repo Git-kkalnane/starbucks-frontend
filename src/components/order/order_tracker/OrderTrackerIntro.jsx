@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoClose } from 'react-icons/io5';
-import { CommonText } from '../common/customText';
+import { CommonText } from '../../common/customText';
 
 const OrderTrackerIntro = ({ shopName, title, subtitle, className = '' }) => {
     const navigate = useNavigate();

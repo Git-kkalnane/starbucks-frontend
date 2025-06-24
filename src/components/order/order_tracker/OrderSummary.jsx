@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommonText } from '../common/customText';
+import { CommonText } from '../../common/customText';
 import OrderSummaryItem from './OrderSummaryItem';
 
 const OrderSummary = ({ orderItems, pickupInfo, className = '' }) => {
