@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { CommonBtn } from '../../common/customBtn';
-import { CommonText } from '../../common/customText';
-import { CommonBtnGroup } from '../../common/BtnGroup';
+import { CommonBtn } from '../common/customBtn';
+import { CommonText } from '../common/customText';
+import { CommonBtnGroup } from '../common/BtnGroup';
 
 //TODO 로그인시 보여질 컴포넌트 추가
 function AuthPanel({ className = '' }) {
