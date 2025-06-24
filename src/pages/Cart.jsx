@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 import { ColumnHeader } from '../components/common/customHeader';
 import CartSummary from '../components/cart/CartSummary';
 import CartItemList from '../components/cart/CartItemList';

@@ -1,5 +1,5 @@
 import React from 'react';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 import { IoClose } from 'react-icons/io5';
 import CupSizeSelector from '../../components/menu/CupSizeSelector';
 import OptionsItem from '../../components/menu/OptionsItem';

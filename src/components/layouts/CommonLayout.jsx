@@ -1,9 +1,9 @@
 // Layout.js
 import React, { useState } from 'react';
-import { useUser } from '../contexts/UserContext';
-import DebugPanel from '../components/debug/DebugPanel';
-import DebugBtnGroup from '../components/debug/DebugBtnGroup';
-import AuthService from '../services/AuthService';
+import { useUser } from '../../contexts/UserContext';
+import DebugPanel from '../debug/DebugPanel';
+import DebugBtnGroup from '../debug/DebugBtnGroup';
+import AuthService from '../../services/AuthService';
 import { useNavigate } from 'react-router-dom';
 import './Layout.css'; // 스타일 분리
 
@@ -29,7 +29,7 @@ export default function CommonLayout({ children, className = '' }) {
     return (
         <div className={`layout-container font-[Pretendard] relative ${className}`}>
             {/* Debug and Logout Button Group */}
-            <DebugBtnGroup 
+            <DebugBtnGroup
                 isAuthenticated={state.isAuthenticated}
                 onToggleDebug={toggleDebug}
                 onLogout={handleLogout}
