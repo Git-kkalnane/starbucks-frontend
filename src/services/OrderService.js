@@ -34,6 +34,7 @@ const transformDessertData = (data) => {
             koreanName: properties['이름']?.title?.[0]?.plain_text ?? '',
             englishName: properties['영문 이름']?.rich_text?.[0]?.plain_text ?? '',
             category: properties['카테고리']?.select?.name ?? '',
+            itemType: 'dessert',
             price: properties['가격']?.number ?? 0,
             description: properties['메뉴 설명']?.rich_text?.[0]?.plain_text ?? '',
             quantity: properties['수량']?.number ?? 0,

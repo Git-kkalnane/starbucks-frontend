@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 export function CommonTextInput({
     type = 'text',
+    name = '',
     placeholder = '',
     className = '',
     containerClassName = '',
@@ -11,6 +12,7 @@ export function CommonTextInput({
     hasError = false,
     required = false,
     onChange = () => {},
+    onBlur = () => {},
     value = '',
     maxLength = 25,
 }) {
@@ -20,13 +22,17 @@ export function CommonTextInput({
         <div className={containerClassName}>
             <input
                 type={type}
+                name={name}
                 placeholder={placeholder}
                 value={value}
                 required={required}
                 maxLength={maxLength}
-                onChange={(e) => onChange(e)}
+                onChange={onChange}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
+                onBlur={(e) => {
+                    setIsFocused(false);
+                    onBlur(e);
+                }}
                 className={`w-full p-3 border rounded-md focus:outline-none ${className}`}
                 style={{
                     color: inputColor,
