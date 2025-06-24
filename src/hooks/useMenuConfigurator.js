@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { starbucksStorage } from '../store/starbucksStorage';
+import { useCart } from './useCart';
 
 const cupSizes = [
     { id: 'solo', name: 'Solo', volume: '30ml', iconSize: 'w-6 h-6' },
@@ -71,24 +71,16 @@ export const useOrderActions = (
         return total * quantity;
     };
 
-    const handleAddToCart = (addToCart, currentImg) => {
-        const cartItem = {
-            id: menuItem.id,
-            item: {
-                ...menuItem,
-                price: menuItem.price,
-            },
-            img: currentImg,
-            itemType: menuItem.itemType,
-            temperatureOption: menuItem.temperatureOption ?? '',
-            options: menuItem.options ?? [],
-            cupSize,
-            quantity,
-            totalPrice: calculateTotal(),
-        };
-        addToCart(cartItem);
-        starbucksStorage.addCart(cartItem);
-    };
+    // Use the new useCart hook for cart-related operations
+    const { handleAddToCart } = useCart(menuItem, {
+        cupSize,
+        availableCupSizes,
+        calculateCupSizePrice,
+        options,
+        calculateOptionsTotal,
+        quantity,
+        calculateTotal,
+    });
 
     const handleOrder = () => {
         console.log('Order placed:', {

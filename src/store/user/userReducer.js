@@ -71,6 +71,11 @@ export const userReducer = (state, action) => {
             };
 
         case ADD_TO_CART:
+            // Handle case where payload might be null or invalid
+            if (!action.payload || !action.payload.item) {
+                console.error('Invalid cart item in ADD_TO_CART:', action.payload);
+                return state;
+            }
             return {
                 ...state,
                 cart: [...state.cart, action.payload.item],
