@@ -12,7 +12,7 @@ import {
     UPDATE_ORDER_STATUS,
     LOGIN_SUCCESS,
     LOGOUT,
-} from '../constants/actionTypes';
+} from '../_utils/constants/actionTypes';
 
 // 초기 상태를 가져오는 함수
 const loadInitialState = () => {

@@ -13,7 +13,7 @@ import {
     UPDATE_ORDER_STATUS,
     LOGIN_SUCCESS,
     LOGOUT,
-} from '../constants/actionTypes';
+} from '../_utils/constants/actionTypes';
 
 // Individual exports
 export const setLoading = (loading) => {
