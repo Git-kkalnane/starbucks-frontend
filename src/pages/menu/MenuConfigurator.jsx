@@ -54,7 +54,7 @@ function MenuConfigurator() {
     const onAddToCart = () => {
         console.log('User state:', userState);
         handleAddToCart(userActions.addToCart, currentImg);
-        // navigate(-1);
+        navigate('/order');
     };
 
     const onOrder = () => {
