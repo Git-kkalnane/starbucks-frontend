@@ -1,6 +1,6 @@
-import { CommonBtn } from '../../common/customBtn';
-import { CommonBtnGroup } from '../../common/BtnGroup';
-import { CommonText } from '../../common/customText';
+import { CommonBtn } from '../common/customBtn';
+import { CommonBtnGroup } from '../common/BtnGroup';
+import { CommonText } from '../common/customText';
 
 function AuthPanel({ className = '' }) {
     return (
