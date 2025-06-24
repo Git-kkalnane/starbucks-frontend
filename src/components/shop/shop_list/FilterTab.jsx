@@ -1,6 +1,6 @@
 import React from 'react';
-import DtSVG from '../../assets/icons/dt-icon.svg?react';
-import SortDescSVG from '../../assets/icons/sort-desc-icon.svg?react';
+import DtSVG from '../../../assets/icons/dt-icon.svg?react';
+import SortDescSVG from '../../../assets/icons/sort-desc-icon.svg?react';
 
 function FilterTabs({ maxH = 'h-18', className = '', onFilterChange, activeFilter = '오름차순' }) {
     const iconSize = 20;

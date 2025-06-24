@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import CommonLayout from '../../components/layouts/CommonLayout';
 import { CommonHeader } from '../../components/common/customHeader';
-import FilterTabs from '../../components/shop/FilterTab';
-import ShopListPanel from '../../components/shop/ShopListPanel';
+import FilterTabs from '../../components/shop/shop_list/FilterTab';
+import ShopListPanel from '../../components/shop/shop_list/ShopListPanel';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { shopService, sortShops } from '../../services/shopService';
 

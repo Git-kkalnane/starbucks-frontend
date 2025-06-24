@@ -1,5 +1,5 @@
 import React from 'react';
-import DtSVG from '../../assets/icons/dt-icon.svg?react';
+import DtSVG from '../../../assets/icons/dt-icon.svg?react';
 import { useNavigate } from 'react-router-dom';
 
 function ShopItem({ shop, className = '' }) {
