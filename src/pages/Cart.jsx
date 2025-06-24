@@ -7,6 +7,7 @@ import StoreSelectionBanner from '../components/common/StoreSelectionBanner';
 import { useNavigate } from 'react-router-dom';
 import CartEmptyView from '../components/cart/CartEmptyView';
 import { useUser } from '../contexts/UserContext';
+import { starbucksStorage } from '../_utils/starbucksStorage';
 
 function Cart() {
     const { state, actions } = useUser();
@@ -54,7 +55,11 @@ function Cart() {
     };
     // 삭제
     const removeItem = (id) => {
-        setCart((prev) => prev.filter((item) => item.id !== id));
+        setCart((prev => {
+            const newCart = prev.filter((item) => item.id !== id);
+            starbucksStorage.setCart(newCart);
+            return newCart;
+        }));
         setSelected((prev) => prev.filter((sid) => sid !== id));
         actions.removeFromCart(id);
     };
@@ -62,14 +67,21 @@ function Cart() {
     const removeSelected = () => {
         if (selected.length === 0) return;
 
-        setCart((prev) => prev.filter((item) => !selected.includes(item.id)));
+        setCart((prev) => {
+            const newCart = prev.filter((item) => !selected.includes(item.id));
+            starbucksStorage.setCart(newCart);
+            return newCart;
+        });
         actions.removeFromCart(selected);
         setSelected([]);
     };
+
+    // 전체 삭제
     const removeAll = () => {
         setCart([]);
         setSelected([]);
         actions.clearCart();
+        starbucksStorage.setCart([]);
     };
 
     return (
