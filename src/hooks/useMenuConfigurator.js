@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { starbucksStorage } from '../_utils/starbucksStorage';
 
 const cupSizes = [
     { id: 'solo', name: 'Solo', volume: '30ml', iconSize: 'w-6 h-6' },
@@ -70,20 +71,23 @@ export const useOrderActions = (
         return total * quantity;
     };
 
-    const handleAddToCart = (addToCart) => {
-        const orderData = {
+    const handleAddToCart = (addToCart, currentImg) => {
+        const cartItem = {
             id: menuItem.id,
-            koreanName: menuItem.koreanName,
-            englishName: menuItem.englishName,
+            item: {
+                ...menuItem,
+                price: menuItem.price,
+            },
+            img: currentImg,
             itemType: menuItem.itemType,
             temperatureOption: menuItem.temperatureOption ?? '',
-            cupSize,
             options: menuItem.options ?? [],
+            cupSize,
             quantity,
             totalPrice: calculateTotal(),
-            itemPrice: menuItem.price,
         };
-        addToCart(orderData);
+        addToCart(cartItem);
+        starbucksStorage.addCart(cartItem);
     };
 
     const handleOrder = () => {

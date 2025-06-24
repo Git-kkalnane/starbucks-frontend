@@ -15,14 +15,16 @@ function Cart() {
     const [selected, setSelected] = useState([]);
 
     const isAllSelected = cart.length > 0 && selected.length === cart.length;
-    const totalQty =
+    const selectedTotalQty =
         selected.length > 0
             ? cart.filter((item) => selected.includes(item.id)).reduce((sum, item) => sum + item.quantity, 0)
             : 0;
 
-    const totalPrice =
+    const selectedTotalPrice =
         selected.length > 0
-            ? cart.filter((item) => selected.includes(item.id)).reduce((sum, item) => sum + item.totalPrice, 0)
+            ? cart
+                  .filter((item) => selected.includes(item.id))
+                  .reduce((sum, item) => sum + item.totalPrice * item.quantity, 0)
             : 0;
     // 선택/해제
     const toggleSelect = (id) => {
@@ -37,13 +39,11 @@ function Cart() {
         const updatedCart = cart.map((item) => {
             if (item.id === id) {
                 const newQuantity = Math.max(1, item.quantity + diff);
-                const pricePerItem = item.totalPrice / item.quantity;
                 actions.updateCartItem(id, { quantity: newQuantity });
 
                 return {
                     ...item,
                     quantity: newQuantity,
-                    totalPrice: Math.round(pricePerItem * newQuantity), // Round to avoid floating point issues
                 };
             }
 
@@ -61,7 +61,7 @@ function Cart() {
     // 선택삭제
     const removeSelected = () => {
         if (selected.length === 0) return;
-        
+
         setCart((prev) => prev.filter((item) => !selected.includes(item.id)));
         actions.removeFromCart(selected);
         setSelected([]);
@@ -96,8 +96,8 @@ function Cart() {
                 )}
                 <CartSummary
                     selectedCount={selected.length}
-                    totalQty={totalQty}
-                    totalPrice={totalPrice}
+                    totalQty={selectedTotalQty}
+                    totalPrice={selectedTotalPrice}
                     onOrder={() => {
                         /* 주문하기 로직 */
                     }}
