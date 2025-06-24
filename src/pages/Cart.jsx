@@ -37,13 +37,11 @@ function Cart() {
         const updatedCart = cart.map((item) => {
             if (item.id === id) {
                 const newQuantity = Math.max(1, item.quantity + diff);
-                const pricePerItem = item.totalPrice / item.quantity;
                 actions.updateCartItem(id, { quantity: newQuantity });
 
                 return {
                     ...item,
                     quantity: newQuantity,
-                    totalPrice: Math.round(pricePerItem * newQuantity), // Round to avoid floating point issues
                 };
             }
 
@@ -61,7 +59,7 @@ function Cart() {
     // 선택삭제
     const removeSelected = () => {
         if (selected.length === 0) return;
-        
+
         setCart((prev) => prev.filter((item) => !selected.includes(item.id)));
         actions.removeFromCart(selected);
         setSelected([]);
