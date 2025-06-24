@@ -1,4 +1,4 @@
-import { validateLoading, validateUser, validateCartItem, validateStore, validateOrder } from '../_utils/validators';
+import { validateLoading, validateUser, validateCartItem, validateStore, validateOrder } from '../../_utils/validators';
 import {
     SET_LOADING,
     SET_USER,
@@ -13,7 +13,7 @@ import {
     UPDATE_ORDER_STATUS,
     LOGIN_SUCCESS,
     LOGOUT,
-} from '../_utils/constants/actionTypes';
+} from '../../_utils/constants/actionTypes';
 
 // Individual exports
 export const setLoading = (loading) => {

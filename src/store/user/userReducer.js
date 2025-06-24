@@ -1,4 +1,4 @@
-import { starbucksStorage } from '../store/starbucksStorage';
+import { starbucksStorage } from '../starbucksStorage';
 
 import {
     SET_LOADING,
@@ -12,7 +12,7 @@ import {
     UPDATE_ORDER_STATUS,
     LOGIN_SUCCESS,
     LOGOUT,
-} from '../_utils/constants/actionTypes';
+} from '../../_utils/constants/actionTypes';
 
 // 초기 상태를 가져오는 함수
 const loadInitialState = () => {
