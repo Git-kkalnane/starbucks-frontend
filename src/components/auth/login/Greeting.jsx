@@ -1,5 +1,5 @@
-import { CommonText } from '../common/customText';
-import Logo from '../common/Logo';
+import { CommonText } from '../../common/customText';
+import Logo from '../../common/Logo';
 
 function Greeting({ className = '' }) {
     return (

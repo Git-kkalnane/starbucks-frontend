@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { CommonBtn } from '../../components/common/customBtn';
 import CommonLayout from '../../components/layouts/CommonLayout';
-import Greeting from '../../components/login/Greeting';
+import Greeting from '../../components/auth/login/Greeting';
 import { CommonTextInput } from '../../components/common/TextInput';
 import { useState } from 'react';
 import { ColumnHeader } from '../../components/common/customHeader';
-import AccountOptions from '../../components/login/AccountOption';
+import AccountOptions from '../../components/auth/login/AccountOption';
 import { useUser } from '../../contexts/UserContext';
 import AuthService from '../../services/AuthService';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
