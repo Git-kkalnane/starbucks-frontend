@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { starbucksStorage } from '../_utils/starbucksStorage';
+import { starbucksStorage } from '../store/starbucksStorage';
 
 const cupSizes = [
     { id: 'solo', name: 'Solo', volume: '30ml', iconSize: 'w-6 h-6' },

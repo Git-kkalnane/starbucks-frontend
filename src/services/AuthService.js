@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { starbucksStorage } from '../_utils/starbucksStorage';
+import { starbucksStorage } from '../store/starbucksStorage';
 
 // TODO env 설정로 변경 예정
 const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';

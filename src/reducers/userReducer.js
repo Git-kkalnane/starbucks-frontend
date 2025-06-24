@@ -1,4 +1,4 @@
-import { starbucksStorage } from '../_utils/starbucksStorage';
+import { starbucksStorage } from '../store/starbucksStorage';
 
 import {
     SET_LOADING,
