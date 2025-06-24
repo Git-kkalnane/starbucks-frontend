@@ -2,10 +2,32 @@ import { useNavigate } from 'react-router-dom';
 import { CommonBtn } from '../common/customBtn';
 import { CommonText } from '../common/customText';
 import { CommonBtnGroup } from '../common/BtnGroup';
+import { useUser } from '../../contexts/UserContext';
 
-//TODO 로그인시 보여질 컴포넌트 추가
 function AuthPanel({ className = '' }) {
     const navigate = useNavigate();
+    const {
+        state: { isAuthenticated, user },
+    } = useUser();
+
+    if (isAuthenticated && user) {
+        return (
+            <section className={` pb-4 px-7 ${className}`}>
+                <div className="flex items-center justify-between  rounded-lg">
+                    <div className="flex items-center">
+                        <div>
+                            <CommonText fontSize="text-lg" bold className="text-black">
+                                {user.nickname || '고객'}님,
+                            </CommonText>
+                            <CommonText fontSize="text-lg" bold className="text-black mt-1">
+                                오늘도 스타벅스를 찾아주셔서 감사합니다.
+                            </CommonText>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     return (
         <section className={`pt-5 pb-4 px-7 ${className}`}>
