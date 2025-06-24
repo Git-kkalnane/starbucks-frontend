@@ -3,9 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import CommonLayout from '../../layouts/CommonLayout';
 import MenuHeader from '../../components/menu/MenuHeader';
 import MenuInfo from '../../components/menu/MenuInfo';
-import OrderActionBtn from '../../components/menu/MenuAction';
-import TemperatureToggle from '../../components/menu/TemperatureToggle';
-import TemperatureDisplay from '../../components/menu/TemperatureDisplay';
+import OrderActionBtn from '../../components/menu/menu_detail/MenuDetailFooter';
+import TemperatureToggle from '../../components/menu/menu_detail/TemperatureToggle';
+import TemperatureDisplay from '../../components/menu/menu_detail/TemperatureDisplay';
 
 const defaultItem = {
     id: 0,
