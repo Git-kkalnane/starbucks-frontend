@@ -4,7 +4,7 @@ import Navigation from './components/layouts/navigation/Navigation';
 import Home from './pages/Home';
 import Pay from './pages/Pay';
 import Charge from './pages/Charge';
-import Order from './pages/Order';
+import Order from './pages/order/Order';
 import Other from './pages/Other';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
