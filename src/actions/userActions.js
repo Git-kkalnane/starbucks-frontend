@@ -68,10 +68,10 @@ export const updateCartItem = (itemId, updates) => ({
     payload: { itemId, updates },
 });
 
-export const removeFromCart = (itemId) => ({
-    type: REMOVE_FROM_CART,
-    payload: itemId,
-});
+export const removeFromCart = (itemIdOrIds) => {
+    const itemIds = Array.isArray(itemIdOrIds) ? itemIdOrIds : [itemIdOrIds];
+    return { type: REMOVE_FROM_CART, payload: { itemIds } };
+};
 
 export const clearCart = () => ({
     type: CLEAR_CART,
@@ -82,7 +82,6 @@ export const setSelectedStore = (store) => {
         console.error('Invalid store data');
         return { type: SET_SELECTED_STORE, payload: null };
     }
-    console.log('userActions.js setSelectedStore', store.name);
     return { type: SET_SELECTED_STORE, payload: { store } };
 };
 

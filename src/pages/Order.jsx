@@ -46,7 +46,7 @@ function Order() {
                 <MenuTab activeTab={activeTab} onTabChange={setActiveTab} />
                 <MenuList activeTab={activeTab} drinkItems={allDrinks} dessertItems={allDesserts} />
             </div>
-            <OrderNavigationBar itemCount={5} />
+            <OrderNavigationBar />
         </CommonLayout>
     );
 }

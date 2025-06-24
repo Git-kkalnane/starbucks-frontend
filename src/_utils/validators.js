@@ -22,20 +22,29 @@ export const validateCartItem = (item) => {
     // Validate required fields
     const hasRequiredFields = [
         'id',
-        'koreanName',
-        'englishName',
-        'itemType',
-        'temperatureOption',
-        'cupSize',
-        'options',
-        'quantity',
-        'totalPrice',
-        'itemPrice',
+        'item', // The entire menuItem object
+        'img', // Image URL
+        'itemType', // Type of the item
+        'temperatureOption', // Temperature option (iced/hot)
+        'options', // Item options
+        'cupSize', // Selected cup size
+        'quantity', // Quantity of items
+        'totalPrice', // Calculated total price
     ].every((field) => field in item);
 
     if (!hasRequiredFields) return false;
 
-    return true;
+    // Additional validation for nested item object
+    if (!item.item || typeof item.item !== 'object') return false;
+
+    const requiredItemFields = ['id', 'koreanName', 'englishName', 'price', 'itemType'].every(
+        (field) => field in item.item,
+    );
+
+    if (!requiredItemFields) return false;
+
+    // Validate types
+    return typeof item.quantity === 'number' && typeof item.totalPrice === 'number' && Array.isArray(item.options);
 };
 
 export const validateStore = (store) => {

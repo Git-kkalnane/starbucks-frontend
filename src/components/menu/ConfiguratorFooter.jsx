@@ -14,7 +14,7 @@ const ConfiguratorFooter = ({ quantity, onQuantityChange, totalPrice, onAddToCar
                     minValue={1}
                 />
                 <CommonText fontSize="text-2xl" bold={true} className="ml-2 px-6 text-black">
-                    {totalPrice.toLocaleString()}원
+                    {(totalPrice * quantity).toLocaleString()}원
                 </CommonText>
             </div>
             <div className="flex gap-2">

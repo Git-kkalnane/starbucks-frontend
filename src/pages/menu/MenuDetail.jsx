@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import CommonLayout from '../../layouts/CommonLayout';
-import MenuHeaderPanel from '../../components/menu/menu_detail/MenuDetailPanel';
+import MenuHeader from '../../components/menu/MenuHeader';
 import MenuInfo from '../../components/menu/MenuInfo';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
-import MenuDetailFooter from '../../components/menu/menu_detail/MenuDetailFooter';
-import TemperaturePanel from '../../components/menu/menu_detail/TemperaturePanel';
+import OrderActionBtn from '../../components/menu/MenuAction';
+import TemperatureToggle from '../../components/menu/TemperatureToggle';
+import TemperatureDisplay from '../../components/menu/TemperatureDisplay';
 
 const defaultItem = {
     id: 0,
@@ -80,23 +80,23 @@ function MenuDetail() {
     if (isLoading || !menuItem) {
         return (
             <CommonLayout>
-                <LoadingSpinner />
+                <div className="flex items-center justify-center h-full">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-starbucks-green"></div>
+                </div>
             </CommonLayout>
         );
     }
 
     console.log(`${menuItem.koreanName} temperatureOption:`, initTemperatureOption);
-    console.log(`${menuItem.koreanName} temperatureOption:`, menuItem);
 
     return (
-        <CommonLayout className=" min-h-screen">
+        <CommonLayout className="flex flex-col min-h-screen">
             {/* Main content area with minimum height and flexible growth */}
             <div className="flex-1 min-h-0 flex flex-col">
                 <div className="overflow-y-auto flex-1">
-                    <MenuHeaderPanel
-                        itemType={menuItem.itemType}
-                        menuItem={menuItem}
-                        isIced={isIced}
+                    <MenuHeader
+                        imageUrl={isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || ''}
+                        name={menuItem.koreanName}
                         onBack={() => navigate(-1)}
                     />
                     <div className="px-4 sm:px-6 pb-32">
@@ -108,29 +108,45 @@ function MenuDetail() {
                             category={menuItem.category}
                             size={menuItem.size}
                         />
-                        <TemperaturePanel
-                            itemType={menuItem.itemType}
-                            initTemperatureOption={initTemperatureOption}
-                            isIced={isIced}
-                            setIsIced={setIsIced}
-                            isCoffee={menuItem.isCoffee}
-                        />
+                        <div className="mt-4 mb-24">
+                            {initTemperatureOption === 'Ice only' || initTemperatureOption === 'Hot only' ? (
+                                <TemperatureDisplay
+                                    isIced={initTemperatureOption === 'Ice only'}
+                                    isActive={true}
+                                    className="max-w-xs mx-auto"
+                                />
+                            ) : (
+                                <TemperatureToggle
+                                    isIced={isIced}
+                                    setIsIced={setIsIced}
+                                    disabled={!menuItem.isCoffee}
+                                    className={!menuItem.isCoffee ? 'opacity-70' : ''}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
 
-                <MenuDetailFooter
-                    price={menuItem.price}
-                    onOrder={() => {
-                        navigate(`/order/menu/${menuItem.id}/configurator`, {
-                            state: {
-                                menuItem: {
-                                    ...menuItem,
-                                    isIced,
-                                },
-                            },
-                        });
-                    }}
-                />
+                {/* Bottom action button container */}
+                <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3">
+                    <div className="max-w-md mx-auto w-full">
+                        <OrderActionBtn
+                            price={menuItem.price}
+                            onOrder={() => {
+                                navigate(`/order/menu/${menuItem.id}/configurator`, {
+                                    state: {
+                                        menuItem: {
+                                            ...menuItem,
+                                            isIced,
+                                        },
+                                        img: isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || '',
+                                    },
+                                });
+                            }}
+                            className="w-full"
+                        />
+                    </div>
+                </div>
             </div>
         </CommonLayout>
     );

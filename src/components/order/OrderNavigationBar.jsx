@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import StoreSelectionBanner from '../common/StoreSelectionBanner';
 import { HiShoppingBag } from 'react-icons/hi2';
@@ -6,9 +6,10 @@ import { useUser } from '../../contexts/UserContext';
 
 import './styles/OrderNavigationBar.css';
 
-const OrderNavigationBar = ({ itemCount, className }) => {
+const OrderNavigationBar = ({ className }) => {
     const navigate = useNavigate();
     const { state: userState } = useUser();
+    const [cart, setCart] = useState(userState.cart);
 
     const handleCartClick = () => {
         navigate('/cart');
@@ -31,9 +32,9 @@ const OrderNavigationBar = ({ itemCount, className }) => {
                 onKeyDown={(e) => e.key === 'Enter' && handleCartClick()}
             >
                 <HiShoppingBag className="w-12 h-12 text-white" />
-                {itemCount > 0 && (
+                {cart.length > 0 && (
                     <span className="absolute top-4 right-3 bg-white text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                        {itemCount}
+                        {cart.length}
                     </span>
                 )}
             </div>

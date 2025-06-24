@@ -19,6 +19,11 @@ export const starbucksStorage = {
     // Cart data (temporary)
     getCart: () => JSON.parse(sessionStorage.getItem(STORAGE_KEYS.CART) || '[]'),
     setCart: (cart) => sessionStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart)),
+    addCart: (cart) => {
+        const existingCart = starbucksStorage.getCart();
+        const updatedCart = [...existingCart, cart];
+        starbucksStorage.setCart(updatedCart);
+    },
 
     // Selected store (persistent)
     getStore: () => JSON.parse(sessionStorage.getItem(STORAGE_KEYS.STORE) || 'null'),

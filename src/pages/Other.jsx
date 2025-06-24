@@ -19,7 +19,7 @@ function Other() {
         { icon: <ReceiptSVG />, label: '영수증', to: '/mock' },
         { icon: <LockSVG />, label: '개인정보 관리', to: '/mock' },
         { icon: <AccountSVG />, label: '계정정보', to: '/mock' },
-        { icon: <CartSVG />, label: '장바구니', to: '/mock' },
+        { icon: <CartSVG />, label: '장바구니', to: '/cart' },
         { icon: <HistorySVG />, label: '과거 주문내역', to: '/mock' },
         { icon: <CustomerServiceSVG />, label: '문의하기', to: '/mock' },
     ];

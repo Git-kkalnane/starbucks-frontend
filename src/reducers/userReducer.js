@@ -84,11 +84,13 @@ export const userReducer = (state, action) => {
                 ),
             };
 
-        case REMOVE_FROM_CART:
+        case REMOVE_FROM_CART: {
+            const itemIds = action.payload.itemIds;
             return {
                 ...state,
-                cart: state.cart.filter((item) => item.id !== action.payload.itemId),
+                cart: state.cart.filter((item) => !itemIds.includes(item.id)),
             };
+        }
 
         case CLEAR_CART:
             return {

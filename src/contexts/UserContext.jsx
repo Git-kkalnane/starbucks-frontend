@@ -78,8 +78,8 @@ export const UserProvider = ({ children }) => {
         dispatch(userActions.updateCartItem(itemId, updates));
     }, []);
 
-    const removeFromCart = useCallback((itemId) => {
-        dispatch(userActions.removeFromCart(itemId));
+    const removeFromCart = useCallback((itemIdOrIds) => {
+        dispatch(userActions.removeFromCart(itemIdOrIds));
     }, []);
 
     const clearCart = useCallback(() => {
