@@ -99,7 +99,7 @@ const MenuConfigurator = () => {
     const handleAddToCart = () => {
         console.log('User state:', userState);
         const orderData = {
-            id: Date.now(), // (백엔드에서 저장된 id, 프론트에 처음 생성시 0으로 고정)
+            id: `${menuItem.englishName}`, // (백엔드에서 저장된 id, 프론트에 처음 생성시 0으로 고정)
             item: menuItem,
             img: currentImg,
             itemType: menuItem.itemType,

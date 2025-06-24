@@ -44,12 +44,7 @@ export const validateCartItem = (item) => {
     if (!requiredItemFields) return false;
 
     // Validate types
-    return (
-        typeof item.id === 'number' &&
-        typeof item.quantity === 'number' &&
-        typeof item.totalPrice === 'number' &&
-        Array.isArray(item.options)
-    );
+    return typeof item.quantity === 'number' && typeof item.totalPrice === 'number' && Array.isArray(item.options);
 };
 
 export const validateStore = (store) => {
