@@ -1,13 +1,13 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Navigation from './navigation/Navigation';
+import Navigation from './components/layouts/navigation/Navigation';
 import Home from './pages/Home';
 import Pay from './pages/Pay';
 import Charge from './pages/Charge';
 import Order from './pages/Order';
 import Other from './pages/Other';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
 import Account from './pages/account/Account';
 import NickNameEdit from './pages/account/NickNameEdit';
 import PasswordEdit from './pages/account/PasswordEdit';
@@ -46,7 +46,6 @@ function App() {
                     <Route path="/order/menu/:id" element={<MenuDetail />} />
                     <Route path="/order/tracking" element={<OrderTracker />} />
                     <Route path="/order/menu/:id/configurator" element={<MenuConfigurator />} />
-
                 </Routes>
             </main>
         </div>

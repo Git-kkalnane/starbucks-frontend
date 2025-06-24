@@ -1,10 +1,10 @@
-import { CommonHeader } from '../components/common/customHeader';
-import CommonLayout from '../layouts/CommonLayout';
-import Logo from '../components/common/Logo';
+import { CommonHeader } from '../../components/common/customHeader';
+import CommonLayout from '../../components/layouts/CommonLayout';
+import Logo from '../../components/common/Logo';
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '../contexts/UserContext';
-import useAuthRedirect from '../hooks/useAuthRedirect';
-import SignupForm from '../components/signup/SignupForm';
+import { useUser } from '../../contexts/UserContext';
+import useAuthRedirect from '../../hooks/useAuthRedirect';
+import SignupForm from '../../components/signup/SignupForm';
 
 function Signup() {
     const navigate = useNavigate();

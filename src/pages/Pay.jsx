@@ -1,5 +1,5 @@
 import React from 'react';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 import { ColumnHeader, CommonHeader } from '../components/common/customHeader';
 import { Card } from '../components/pay/Card';
 import { Link } from 'react-router-dom';

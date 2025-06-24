@@ -1,5 +1,5 @@
 import React from 'react';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 import { ColumnHeader } from '../components/common/customHeader';
 import AuthPanel from '../components/other/auth_panel/AuthPanel';
 import ServicePanel from '../components/other/service_panel/ServicePanel';

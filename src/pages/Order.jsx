@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 import { ColumnHeader } from '../components/common/customHeader';
 import MenuTab from '../components/order/MenuTab';
 import MenuList from '../components/order/MenuList';

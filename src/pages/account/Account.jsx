@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CommonHeader } from '../../components/common/customHeader';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 import { CommonText } from '../../components/common/customText';
 import ForwardSVG from '../../assets/icons/forward-icon.svg?react';
 import { Link } from 'react-router-dom';

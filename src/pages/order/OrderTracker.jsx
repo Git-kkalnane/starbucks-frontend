@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 import OrderTrackerIntro from '../../components/order_tracker/OrderTrackerIntro';
 import OrderTrackerProgress from '../../components/order_tracker/OrderTrackerProgress';
 import OrderSummary from '../../components/order_tracker/OrderSummary';

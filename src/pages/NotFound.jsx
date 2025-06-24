@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import CommonLayout from '../layouts/CommonLayout';
+import CommonLayout from '../components/layouts/CommonLayout';
 import { CommonBtn } from '../components/common/customBtn';
 
 function NotFound() {

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CommonHeader } from '../../components/common/customHeader';
 import { CommonText } from '../../components/common/customText';
 import { CommonTextInput } from '../../components/common/TextInput';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 
 function NickNameEdit() {
     const [value, setValue] = useState('사용자닉네임');

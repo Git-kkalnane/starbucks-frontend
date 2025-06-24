@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CommonHeader } from '../../components/common/customHeader';
 import { CommonText } from '../../components/common/customText';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 import { CommonBtn } from '../../components/common/customBtn';
 
 function PasswordEdit() {

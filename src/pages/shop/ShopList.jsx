@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import CommonLayout from '../../layouts/CommonLayout';
+import CommonLayout from '../../components/layouts/CommonLayout';
 import { CommonHeader } from '../../components/common/customHeader';
 import FilterTabs from '../../components/shop/FilterTab';
 import ShopListPanel from '../../components/shop/ShopListPanel';

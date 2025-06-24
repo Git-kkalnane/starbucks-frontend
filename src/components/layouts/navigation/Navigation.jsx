@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import HomeSVG from '../assets/icons/home.svg?react';
-import PaySVG from '../assets/icons/pay.svg?react';
-import OrderSVG from '../assets/icons/order.svg?react';
-import OtherSVG from '../assets/icons/other.svg?react';
+import HomeSVG from '../../../assets/icons/home.svg?react';
+import PaySVG from '../../../assets/icons/pay.svg?react';
+import OrderSVG from '../../../assets/icons/order.svg?react';
+import OtherSVG from '../../../assets/icons/other.svg?react';
 
 import './Navigation.css';
 
