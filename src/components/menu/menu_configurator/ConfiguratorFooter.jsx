@@ -1,7 +1,7 @@
 import React from 'react';
-import QuantityControl from '../common/QuantityControl';
-import { CommonText } from '../common/customText';
-import { CommonBtn } from '../common/customBtn';
+import QuantityControl from '../../common/QuantityControl';
+import { CommonText } from '../../common/customText';
+import { CommonBtn } from '../../common/customBtn';
 
 const ConfiguratorFooter = ({ quantity, onQuantityChange, totalPrice, onAddToCart, onOrder }) => {
     return (

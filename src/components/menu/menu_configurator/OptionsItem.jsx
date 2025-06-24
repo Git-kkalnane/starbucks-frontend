@@ -1,6 +1,6 @@
 import React from 'react';
-import { CommonText } from '../common/customText';
-import QuantityControl from '../common/QuantityControl';
+import { CommonText } from '../../common/customText';
+import QuantityControl from '../../common/QuantityControl';
 
 const OptionsItem = ({
     title,

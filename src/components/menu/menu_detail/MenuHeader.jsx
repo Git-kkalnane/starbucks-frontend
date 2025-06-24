@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommonHeader } from '../common/customHeader';
+import { CommonHeader } from '../../common/customHeader';
 
 const MenuHeader = ({ imageUrl, name, onBack, className }) => {
     return (

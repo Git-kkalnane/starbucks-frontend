@@ -1,5 +1,5 @@
 import React from 'react';
-import { CommonText } from '../common/customText';
+import { CommonText } from '../../common/customText';
 import { RiCupLine } from 'react-icons/ri';
 
 const CupSizeSelector = ({ cupSize, setCupSize, cupSizes, iconSize = 'w-6 h-6' }) => {
