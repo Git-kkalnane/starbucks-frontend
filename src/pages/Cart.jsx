@@ -15,14 +15,16 @@ function Cart() {
     const [selected, setSelected] = useState([]);
 
     const isAllSelected = cart.length > 0 && selected.length === cart.length;
-    const totalQty =
+    const selectedTotalQty =
         selected.length > 0
             ? cart.filter((item) => selected.includes(item.id)).reduce((sum, item) => sum + item.quantity, 0)
             : 0;
 
-    const totalPrice =
+    const selectedTotalPrice =
         selected.length > 0
-            ? cart.filter((item) => selected.includes(item.id)).reduce((sum, item) => sum + item.totalPrice, 0)
+            ? cart
+                  .filter((item) => selected.includes(item.id))
+                  .reduce((sum, item) => sum + item.totalPrice * item.quantity, 0)
             : 0;
     // 선택/해제
     const toggleSelect = (id) => {
@@ -94,8 +96,8 @@ function Cart() {
                 )}
                 <CartSummary
                     selectedCount={selected.length}
-                    totalQty={totalQty}
-                    totalPrice={totalPrice}
+                    totalQty={selectedTotalQty}
+                    totalPrice={selectedTotalPrice}
                     onOrder={() => {
                         /* 주문하기 로직 */
                     }}
