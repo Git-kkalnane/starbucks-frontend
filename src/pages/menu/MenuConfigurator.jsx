@@ -9,6 +9,7 @@ import { useOptionCount, useCoffee, useQuantity } from '../../hooks/order';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useUser } from '../../contexts/UserContext';
 import { useCupSizes, useCupSize, useOrderActions } from '../../hooks/useMenuConfigurator';
+import useAuthRedirect from '../../hooks/useAuthRedirect';
 
 // TODO: props로 전달받는 데이터로 변경
 const defaultOptions = [
@@ -23,6 +24,11 @@ function MenuConfigurator() {
     const location = useLocation();
     const { state } = location;
     const menuItem = state?.menuItem || {};
+
+    useAuthRedirect({
+        requireAuth: true,
+        authState: userState,
+    });
 
     // Custom hooks for business logic
     const availableCupSizes = useCupSizes(menuItem);

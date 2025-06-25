@@ -4,6 +4,8 @@ import CommonLayout from '../../components/layouts/CommonLayout';
 import OrderTrackerIntro from '../../components/order/order_tracker/OrderTrackerIntro';
 import OrderTrackerProgress from '../../components/order/order_tracker/OrderTrackerProgress';
 import OrderSummary from '../../components/order/order_tracker/OrderSummary';
+import useAuthRedirect from '../../hooks/useAuthRedirect';
+import { useUser } from '../../contexts/UserContext';
 
 const orderMsg = {
     title: '주문을 확인하고 있어요',
@@ -22,6 +24,12 @@ const OrderTracker = () => {
     const [currentMsg, setCurrentMsg] = useState(orderMsg);
     const [currentStep, setCurrentStep] = useState(1);
     const navigate = useNavigate();
+    const { state: userState } = useUser();
+
+    useAuthRedirect({
+        requireAuth: true,
+        authState: userState,
+    });
 
     // Order data
     const pickupInfo = {
