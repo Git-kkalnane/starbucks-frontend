@@ -1,34 +1,42 @@
 import axios from 'axios';
 
-// 임시로 사용중
-const transformNotionData = (data) => {
-    return data.results.map((page) => {
-        const properties = page.properties;
-        return {
-            storeId: properties['매장 ID']?.title?.[0]?.plain_text ?? '',
-            name: properties['매장명']?.rich_text?.[0]?.plain_text ?? '',
-            address: properties['주소']?.rich_text?.[0]?.plain_text ?? '',
-            phone: properties['전화번호']?.phone_number ?? '',
-            hours: properties['영업시간']?.rich_text?.[0]?.plain_text ?? '',
-            driveThru: properties['드라이버스루']?.select?.name ?? '',
-            seats: properties['죄석 수']?.rich_text?.[0]?.plain_text ?? '',
-            congestion: properties['혼잡여부']?.select?.name ?? '',
-            img: 'https://image.istarbucks.co.kr//upload/store/2021/12/[9319]_20211222090208_scyh3.jpg',
-        };
-    });
+const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+
+const api = axios.create({
+    baseURL: URL + API_VERSION,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    // withCredentials: true, // httpOnly 쿠키를 위해 필요
+});
+// Transform API response to match frontend data structure
+const transformShopData = (data) => {
+    if (!data) return [];
+
+    return data.map((shop) => ({
+        storeId: shop.id,
+        name: shop.name,
+        address: shop.address,
+        phone: shop.phone,
+        hours: shop.openingHours,
+        driveThru: shop.hasDriveThrough || false,
+        seats: shop.seatingCapacity?.toString() || '',
+        congestion: shop.currentCrowdLevel,
+        img: shop.imageUrl || 'https://image.istarbucks.co.kr//upload/store/2021/12/[9319]_20211222090208_scyh3.jpg',
+    }));
 };
 
-// TODO: 서버 개발 후 로직 변경 예정 (임시로 notion API사용)
 export const shopService = {
-    async fetchShops() {
+    async fetchShops(page = 0, size = 10) {
         try {
-            const response = await axios.post(
-                '/api/shops/v1/databases/20ef1eb21fb180c3acc8f3089a79e719/query',
-                {},
-                { headers: { 'Content-Type': 'application/json' } },
-            );
-
-            return transformNotionData(response.data);
+            const response = await api.get('/stores', {
+                params: {
+                    page,
+                    size,
+                },
+            });
+            return transformShopData(response.data.result.stores || response.data.data);
         } catch (error) {
             console.error('Failed to fetch shops:', error);
             throw error;
@@ -42,7 +50,7 @@ export const sortShops = (shops, sortBy) => {
     switch (sortBy) {
         case 'DT':
             return shopsCopy
-                .filter((shop) => shop.driveThru === 'True')
+                .filter((shop) => shop.driveThru === true)
                 .sort((a, b) => a.name.localeCompare(b.name, 'ko-KR'));
 
         case '오름차순':
