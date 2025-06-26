@@ -2,11 +2,11 @@ import axios from 'axios';
 import { starbucksStorage } from '../store/starbucksStorage';
 
 // TODO env 설정로 변경 예정
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
-
+const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 // 기본 axios 인스턴스 생성
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: URL + API_VERSION,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -117,18 +117,21 @@ const AuthService = {
                 password,
             });
 
-            console.log('Login response:', response);
+            const authHeader = response.headers['authorization'];
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                throw new Error('No access token found in response');
+            }
+            const accessToken = authHeader.split(' ')[1];
 
-            const { accessToken, user } = response.data.data;
-
-            if (accessToken && user) {
-                // 액세스 토큰은 메모리나 세션 스토리지에 저장
-                AuthService.setAuthToken(accessToken);
-                AuthService.setUserInfo(user);
-                return user;
+            const userData = response.data?.result;
+            if (!userData) {
+                throw new Error('No user data in response');
             }
 
-            throw new Error('Invalid response from server');
+            AuthService.setAuthToken(accessToken);
+            AuthService.setUserInfo(userData);
+
+            return userData;
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
