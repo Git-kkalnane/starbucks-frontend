@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import CommonLayout from '../../components/layouts/CommonLayout';
 import MenuHeader from '../../components/menu/menu_detail/MenuHeader';
 import MenuInfo from '../../components/menu/menu_detail/MenuInfo';
 import OrderActionBtn from '../../components/menu/menu_detail/MenuDetailFooter';
 import TemperatureToggle from '../../components/menu/menu_detail/TemperatureToggle';
 import TemperatureDisplay from '../../components/menu/menu_detail/TemperatureDisplay';
+import { OrderQueryService } from '../../services/OrderService';
+import { TemperatureDisplayOption } from '../../_utils/constants/beverageOptions';
 
 const defaultItem = {
     id: 0,
@@ -28,12 +30,12 @@ const defaultItem = {
 
 function MenuDetail() {
     const navigate = useNavigate();
-    const location = useLocation();
+    const { id: itemId } = useParams();
     const [isIced, setIsIced] = useState(true);
     const [menuItem, setMenuItem] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-
-    const initTemperatureOption = location.state?.menuItem?.temperatureOption;
+    const [error, setError] = useState(null);
+    const [initTemperatureOption, setInitTemperatureOption] = useState('');
 
     // Update temperatureOption when isIced changes
     useEffect(() => {
@@ -44,39 +46,53 @@ function MenuDetail() {
                 temperatureOption,
                 isIce: isIced,
             }));
-            // console.log('isIced changed:', temperatureOption);
         }
     }, [isIced]);
 
-    // Get menu item from navigation state or fetch it
+    // Fetch menu item using the itemId from URL
     useEffect(() => {
-        if (location.state?.menuItem) {
-            console.log('Menu item received:', location.state.menuItem);
-            const item = location.state.menuItem;
-            setMenuItem(item);
-            if (initTemperatureOption === 'Hot only') {
-                setIsIced(false);
-                // console.log('item.temperatureOption === "Hot only');
-            } else if (initTemperatureOption === 'Ice only') {
-                setIsIced(true);
-            }
-            // Ice/Hot인 경우
-            else if (item.temperatureOption) {
-                console.log('else if (item.temperatureOption):');
-                setIsIced(item.temperatureOption === 'iced');
+        const fetchMenuItem = async () => {
+            if (!itemId) {
+                console.warn('No menu item ID provided, using fallback data');
+                setMenuItem(defaultItem);
+                setIsIced(defaultItem.isIce);
+                setIsLoading(false);
+                return;
             }
 
-            setIsLoading(false);
-        } else {
-            // Fallback: If no menuItem in state, use a default item
-            // In a real app, you might want to fetch the item using the ID from the URL
-            console.warn('No menu item data received, using fallback data');
+            try {
+                console.log(`Fetching menu item with ID: ${itemId}`);
+                const itemData = await OrderQueryService.fetchBeverageItemDetail(itemId);
 
-            setMenuItem(defaultItem);
-            setIsIced(defaultItem.isIce);
-            setIsLoading(false);
-        }
-    }, [location.state]);
+                if (itemData) {
+                    console.log('Fetched menu item:', itemData);
+                    const newItem = {
+                        ...itemData,
+
+                        temperatureOption: itemData.temperatureOptions?.includes('ICE') ? 'iced' : 'hot',
+                        isIce: itemData.temperatureOptions?.includes('ICE'),
+                    };
+
+                    setMenuItem(newItem);
+                    setIsIced(newItem.isIce);
+                    console.log('newItem: ->', newItem);
+                    setInitTemperatureOption(newItem.defaultTemperature);
+                } else {
+                    throw new Error('No data received from server');
+                }
+            } catch (err) {
+                console.error('Error fetching menu item:', err);
+                setError('메뉴 정보를 불러오는 데 실패했습니다.');
+                // Fallback to default item
+                setMenuItem(defaultItem);
+                setIsIced(defaultItem.isIce);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchMenuItem();
+    }, [itemId]);
     if (isLoading || !menuItem) {
         return (
             <CommonLayout>
@@ -87,15 +103,21 @@ function MenuDetail() {
         );
     }
 
-    console.log(`${menuItem.koreanName} temperatureOption:`, initTemperatureOption);
-
     return (
         <CommonLayout className="flex flex-col min-h-screen">
             {/* Main content area with minimum height and flexible growth */}
             <div className="flex-1 min-h-0 flex flex-col">
                 <div className="overflow-y-auto flex-1">
                     <MenuHeader
-                        imageUrl={isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || ''}
+                        imageUrl={
+                            initTemperatureOption === TemperatureDisplayOption.ICE_ONLY
+                                ? menuItem.img?.ice || ''
+                                : initTemperatureOption === TemperatureDisplayOption.HOT_ONLY
+                                ? menuItem.img?.hot || ''
+                                : isIced
+                                ? menuItem.img?.ice || ''
+                                : menuItem.img?.hot || ''
+                        }
                         name={menuItem.koreanName}
                         onBack={() => navigate(-1)}
                     />
@@ -109,9 +131,10 @@ function MenuDetail() {
                             size={menuItem.size}
                         />
                         <div className="mt-4 mb-24">
-                            {initTemperatureOption === 'Ice only' || initTemperatureOption === 'Hot only' ? (
+                            {initTemperatureOption === TemperatureDisplayOption.HOT_ONLY ||
+                            initTemperatureOption === TemperatureDisplayOption.ICE_ONLY ? (
                                 <TemperatureDisplay
-                                    isIced={initTemperatureOption === 'Ice only'}
+                                    isIced={initTemperatureOption === TemperatureDisplayOption.ICE_ONLY}
                                     isActive={true}
                                     className="max-w-xs mx-auto"
                                 />
