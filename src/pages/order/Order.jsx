@@ -11,14 +11,23 @@ function Order() {
     const [allDrinks, setAllDrinks] = useState([]);
     const [allDesserts, setAllDesserts] = useState([]);
 
+    const [pagination, setPagination] = useState({
+        totalCount: 0,
+        currentPage: 0,
+        totalPages: 0,
+        pageSize: 10
+    });
+
     useEffect(() => {
         async function fetchData() {
             try {
-                const drinks = await OrderQueryService.fetchDrinkItems();
-                console.log(drinks[0]);
-                setAllDrinks(drinks);
+                const { items, pagination: paginationData } = await OrderQueryService.fetchDrinkItems();
+                console.log('Drinks data:', items);
+                console.log('Pagination:', paginationData);
+                setAllDrinks(items);
+                setPagination(paginationData);
             } catch (err) {
-                console.error('데이터 불러오기 실패:', err);
+                console.error('음료 데이터 불러오기 실패:', err);
             }
         }
 
@@ -28,9 +37,9 @@ function Order() {
     useEffect(() => {
         async function fetchDessertData() {
             try {
-                const desserts = await OrderQueryService.fetchDessertItems();
-                console.log(desserts[0]);
-                setAllDesserts(desserts);
+                const { items } = await OrderQueryService.fetchDessertItems();
+                console.log('Desserts data:', items);
+                setAllDesserts(items);
             } catch (err) {
                 console.error('데이터 불러오기 실패:', err);
             }
