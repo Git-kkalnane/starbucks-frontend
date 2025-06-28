@@ -8,6 +8,7 @@ import TemperatureToggle from '../../components/menu/menu_detail/TemperatureTogg
 import TemperatureDisplay from '../../components/menu/menu_detail/TemperatureDisplay';
 import { OrderQueryService } from '../../services/OrderService';
 import { TemperatureDisplayOption } from '../../_utils/constants/beverageOptions';
+import ItemType from '../../_utils/constants/itemType';
 
 const defaultItem = {
     id: 0,
@@ -36,6 +37,7 @@ function MenuDetail() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [initTemperatureOption, setInitTemperatureOption] = useState('');
+    const itemType = useLocation().state.itemType;
 
     // Update temperatureOption when isIced changes
     useEffect(() => {
@@ -61,8 +63,8 @@ function MenuDetail() {
             }
 
             try {
-                console.log(`Fetching menu item with ID: ${itemId}`);
-                const itemData = await OrderQueryService.fetchBeverageItemDetail(itemId);
+                console.log(`itemType: ${itemType}`);
+                const itemData = await OrderQueryService.fetchItemDetail(itemId, itemType);
 
                 if (itemData) {
                     console.log('Fetched menu item:', itemData);
@@ -110,13 +112,15 @@ function MenuDetail() {
                 <div className="overflow-y-auto flex-1">
                     <MenuHeader
                         imageUrl={
-                            initTemperatureOption === TemperatureDisplayOption.ICE_ONLY
-                                ? menuItem.img?.ice || ''
-                                : initTemperatureOption === TemperatureDisplayOption.HOT_ONLY
-                                ? menuItem.img?.hot || ''
-                                : isIced
-                                ? menuItem.img?.ice || ''
-                                : menuItem.img?.hot || ''
+                            itemType === ItemType.BEVERAGE
+                                ? initTemperatureOption === TemperatureDisplayOption.ICE_ONLY
+                                    ? menuItem.img?.ice || ''
+                                    : initTemperatureOption === TemperatureDisplayOption.HOT_ONLY
+                                    ? menuItem.img?.hot || ''
+                                    : isIced
+                                    ? menuItem.img?.ice || ''
+                                    : menuItem.img?.hot || ''
+                                : menuItem.img.defaultUrl || ''
                         }
                         name={menuItem.koreanName}
                         onBack={() => navigate(-1)}
@@ -130,23 +134,25 @@ function MenuDetail() {
                             category={menuItem.category}
                             size={menuItem.size}
                         />
-                        <div className="mt-4 mb-24">
-                            {initTemperatureOption === TemperatureDisplayOption.HOT_ONLY ||
-                            initTemperatureOption === TemperatureDisplayOption.ICE_ONLY ? (
-                                <TemperatureDisplay
-                                    isIced={initTemperatureOption === TemperatureDisplayOption.ICE_ONLY}
-                                    isActive={true}
-                                    className="max-w-xs mx-auto"
-                                />
-                            ) : (
-                                <TemperatureToggle
-                                    isIced={isIced}
-                                    setIsIced={setIsIced}
-                                    disabled={!menuItem.isCoffee}
-                                    className={!menuItem.isCoffee ? 'opacity-70' : ''}
-                                />
-                            )}
-                        </div>
+                        {itemType !== ItemType.DESSERT && (
+                            <div className="mt-4 mb-24">
+                                {initTemperatureOption === TemperatureDisplayOption.HOT_ONLY ||
+                                initTemperatureOption === TemperatureDisplayOption.ICE_ONLY ? (
+                                    <TemperatureDisplay
+                                        isIced={initTemperatureOption === TemperatureDisplayOption.ICE_ONLY}
+                                        isActive={true}
+                                        className="max-w-xs mx-auto"
+                                    />
+                                ) : (
+                                    <TemperatureToggle
+                                        isIced={isIced}
+                                        setIsIced={setIsIced}
+                                        disabled={!menuItem.isCoffee}
+                                        className={!menuItem.isCoffee ? 'opacity-70' : ''}
+                                    />
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 
