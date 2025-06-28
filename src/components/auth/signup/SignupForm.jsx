@@ -4,6 +4,7 @@ import { CommonBtn } from '../../common/customBtn';
 import { validateField, validateForm } from './validator';
 import FormFields from './FormFields';
 import TermsAgreement from './TermsAgreement';
+import AuthService from '../../../services/AuthService';
 
 const SignupForm = () => {
     const navigate = useNavigate();
@@ -20,7 +21,6 @@ const SignupForm = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(`name: ${name}, ${value}`);
 
         setFormData((prev) => ({
             ...prev,
@@ -41,7 +41,7 @@ const SignupForm = () => {
         setErrors(newErrors);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const { errors: validationErrors, isValid } = validateForm(formData, validateField);
@@ -49,16 +49,17 @@ const SignupForm = () => {
 
         if (isValid) {
             setIsSubmitting(true);
-            // TODO: Implement signup logic here
-            console.log('Form submitted:', formData);
-            // Reset form after submission
-            setFormData({
-                name: '',
-                nickname: '',
-                email: '',
-                password: '',
-            });
-            setIsSubmitting(false);
+            try {
+                const result = await AuthService.signup(formData);
+                alert(result.message);
+                // 회원가입 성공 시 로그인 페이지로 이동
+                navigate('/login');
+            } catch (error) {
+                console.error('회원가입 실패:', error);
+                alert(error.message || '회원가입 중 오류가 발생했습니다.');
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     };
 

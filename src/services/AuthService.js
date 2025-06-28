@@ -2,11 +2,11 @@ import axios from 'axios';
 import { starbucksStorage } from '../store/starbucksStorage';
 
 // TODO env 설정로 변경 예정
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
-
+const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 // 기본 axios 인스턴스 생성
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: URL + API_VERSION,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -117,18 +117,21 @@ const AuthService = {
                 password,
             });
 
-            console.log('Login response:', response);
+            const authHeader = response.headers['authorization'];
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                throw new Error('No access token found in response');
+            }
+            const accessToken = authHeader.split(' ')[1];
 
-            const { accessToken, user } = response.data.data;
-
-            if (accessToken && user) {
-                // 액세스 토큰은 메모리나 세션 스토리지에 저장
-                AuthService.setAuthToken(accessToken);
-                AuthService.setUserInfo(user);
-                return user;
+            const userData = response.data?.result;
+            if (!userData) {
+                throw new Error('No user data in response');
             }
 
-            throw new Error('Invalid response from server');
+            AuthService.setAuthToken(accessToken);
+            AuthService.setUserInfo(userData);
+
+            return userData;
         } catch (error) {
             console.error('Login failed:', error);
             throw error;
@@ -139,14 +142,38 @@ const AuthService = {
     async logout() {
         try {
             // 브라우저에 저장한 세션 및 토큰 제거
-            this.clearAuth();
+            AuthService.clearAuth();
             // 로그인 페이지로 리다이렉트
-            window.location.href = '/';
+            window.location.href = '/login';
         } catch (error) {
-            console.error('로그아웃 처리 중 오류:', error);
-            // 오류가 발생해도 사용자 정보는 클리어
-            this.clearAuth();
-            window.location.href = '/';
+            console.error('Logout failed:', error);
+            throw error;
+        }
+    },
+
+    // 회원가입
+    async signup(userData) {
+        try {
+            const response = await api.post('/members/signup', userData);
+
+            if (response.data?.status !== 201) {
+                throw new Error(response.data?.message || '회원가입에 실패했습니다.');
+            }
+
+            const userInfo = response.data?.result;
+            if (!userInfo) {
+                throw new Error('서버로부터 유효한 응답을 받지 못했습니다.');
+            }
+
+            // 회원가입 성공 메시지와 함께 사용자 정보 반환
+            return {
+                success: true,
+                message: response.data.message,
+                user: userInfo,
+            };
+        } catch (error) {
+            console.error('Signup failed:', error);
+            throw error;
         }
     },
 
