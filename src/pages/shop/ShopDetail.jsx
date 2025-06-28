@@ -17,7 +17,7 @@ function ShopDetail() {
     const { state: userState, actions: userActions } = useUser();
     const navigate = useNavigate();
     const location = useLocation();
-    const { storeId } = useParams();
+    const { id: storeId } = useParams();
     const [shopData, setShopData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -42,8 +42,8 @@ function ShopDetail() {
             setError(null);
 
             try {
-                const response = await api.get(`/api/shops/${storeId}`);
-                setShopData(response.data);
+                const _shopData = await shopService.fetchShopDetail(storeId);
+                setShopData(_shopData);
             } catch (err) {
                 console.error('Error fetching shop data:', err);
                 setError('Failed to load shop data');
