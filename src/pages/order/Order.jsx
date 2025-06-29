@@ -23,87 +23,171 @@ function Order() {
             currentPage: 0,
             totalPages: 1,
             hasMore: true,
-            isLoading: false
+            isLoading: false,
         },
         desserts: {
             currentPage: 0,
             totalPages: 1,
             hasMore: true,
-            isLoading: false
-        }
+            isLoading: false,
+        },
     });
 
-    const fetchItems = useCallback(async (type, page = 0, append = false) => {
-        const isDrink = type === '음료';
-        const stateKey = isDrink ? 'drinks' : 'desserts';
-        
-        // Prevent multiple simultaneous loads
-        if (pagination[stateKey].isLoading) return;
-        
-        try {
-            setPagination(prev => ({
-                ...prev,
-                [stateKey]: {
-                    ...prev[stateKey],
-                    isLoading: true
-                }
-            }));
-            
-            const { items, pagination: paginationData } = isDrink
-                ? await OrderQueryService.fetchDrinkItems(page, ITEMS_PER_PAGE, { signal: AbortSignal.timeout(10000) })
-                : await OrderQueryService.fetchDessertItems(page, ITEMS_PER_PAGE, { signal: AbortSignal.timeout(10000) });
-            
-            setPagination(prev => ({
-                ...prev,
-                [stateKey]: {
-                    currentPage: page,
-                    totalPages: paginationData.totalPages,
-                    hasMore: page < paginationData.totalPages - 1,
-                    isLoading: false
-                }
-            }));
-            
-            if (isDrink) {
-                setAllDrinks(prev => append ? [...prev, ...items] : items);
-            } else {
-                setAllDesserts(prev => append ? [...prev, ...items] : items);
-            }
-            
-            if (error) setError(null);
-        } catch (err) {
-            console.error(`Error fetching ${type} items:`, err);
-            const errorMessage = err.message.includes('timeout') 
-                ? '요청 시간이 초과되었습니다. 네트워크 상태를 확인해 주세요.'
-                : `${type} 목록을 불러오는 데 실패했습니다.`;
-                
-            toast.error(errorMessage);
-            setError(errorMessage);
-            
-            setPagination(prev => ({
-                ...prev,
-                [stateKey]: {
-                    ...prev[stateKey],
-                    isLoading: false
-                }
-            }));
-        } finally {
-            setIsLoading(false);
-        }
-    }, [error]);
+    const fetchItems = useCallback(
+        async (type, page = 0, append = false) => {
+            const isDrink = type === '음료';
+            const stateKey = isDrink ? 'drinks' : 'desserts';
 
-    // Initial load
+            // Prevent multiple simultaneous loads
+            if (pagination[stateKey].isLoading) return;
+
+            try {
+                setPagination((prev) => ({
+                    ...prev,
+                    [stateKey]: {
+                        ...prev[stateKey],
+                        isLoading: true,
+                    },
+                }));
+
+                const { items, pagination: paginationData } = isDrink
+                    ? await OrderQueryService.fetchDrinkItems(page, ITEMS_PER_PAGE, {
+                          signal: AbortSignal.timeout(10000),
+                      })
+                    : await OrderQueryService.fetchDessertItems(page, ITEMS_PER_PAGE, {
+                          signal: AbortSignal.timeout(10000),
+                      });
+
+                setPagination((prev) => ({
+                    ...prev,
+                    [stateKey]: {
+                        currentPage: page,
+                        totalPages: paginationData.totalPages,
+                        hasMore: page < paginationData.totalPages - 1,
+                        isLoading: false,
+                    },
+                }));
+
+                if (isDrink) {
+                    setAllDrinks((prev) => (append ? [...prev, ...items] : items));
+                } else {
+                    setAllDesserts((prev) => (append ? [...prev, ...items] : items));
+                }
+
+                if (error) setError(null);
+            } catch (err) {
+                console.error(`Error fetching ${type} items:`, err);
+                const errorMessage = err.message.includes('timeout')
+                    ? '요청 시간이 초과되었습니다. 네트워크 상태를 확인해 주세요.'
+                    : `${type} 목록을 불러오는 데 실패했습니다.`;
+
+                toast.error(errorMessage);
+                setError(errorMessage);
+
+                setPagination((prev) => ({
+                    ...prev,
+                    [stateKey]: {
+                        ...prev[stateKey],
+                        isLoading: false,
+                    },
+                }));
+            } finally {
+                setIsLoading(false);
+            }
+        },
+        [error],
+    );
+
+    // Initial load - fetch both drinks and desserts
     useEffect(() => {
-        fetchItems('음료');
-        fetchItems('디저트');
+        const fetchInitialData = async () => {
+            try {
+                setIsLoading(true);
+
+                // Fetch drinks
+                const drinksData = await OrderQueryService.fetchDrinkItems(0, ITEMS_PER_PAGE);
+                setAllDrinks(drinksData.items);
+                setPagination((prev) => ({
+                    ...prev,
+                    drinks: {
+                        ...prev.drinks,
+                        currentPage: 0,
+                        totalPages: drinksData.pagination.totalPages,
+                        hasMore: 0 < drinksData.pagination.totalPages - 1,
+                    },
+                }));
+
+                // Fetch desserts
+                const dessertsData = await OrderQueryService.fetchDessertItems(0, ITEMS_PER_PAGE);
+                setAllDesserts(dessertsData.items);
+                setPagination((prev) => ({
+                    ...prev,
+                    desserts: {
+                        ...prev.desserts,
+                        currentPage: 0,
+                        totalPages: dessertsData.pagination.totalPages,
+                        hasMore: 0 < dessertsData.pagination.totalPages - 1,
+                    },
+                }));
+            } catch (err) {
+                console.error('Error fetching initial data:', err);
+                toast.error('메뉴를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
+                setError('메뉴를 불러오는 데 실패했습니다.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchInitialData();
     }, []);
 
-    const loadMoreItems = () => {
+    const loadMoreItems = async () => {
         const stateKey = activeTab === '음료' ? 'drinks' : 'desserts';
         const { currentPage, hasMore, isLoading } = pagination[stateKey];
-        
-        if (!isLoading && hasMore) {
+
+        if (isLoading || !hasMore) return;
+
+        try {
+            setPagination((prev) => ({
+                ...prev,
+                [stateKey]: {
+                    ...prev[stateKey],
+                    isLoading: true,
+                },
+            }));
+
             const nextPage = currentPage + 1;
-            fetchItems(activeTab, nextPage, true);
+            const { items, pagination: paginationData } =
+                stateKey === 'drinks'
+                    ? await OrderQueryService.fetchDrinkItems(nextPage, ITEMS_PER_PAGE)
+                    : await OrderQueryService.fetchDessertItems(nextPage, ITEMS_PER_PAGE);
+
+            if (stateKey === 'drinks') {
+                setAllDrinks((prev) => [...prev, ...items]);
+            } else {
+                setAllDesserts((prev) => [...prev, ...items]);
+            }
+
+            setPagination((prev) => ({
+                ...prev,
+                [stateKey]: {
+                    currentPage: nextPage,
+                    totalPages: paginationData.totalPages,
+                    hasMore: nextPage < paginationData.totalPages - 1,
+                    isLoading: false,
+                },
+            }));
+        } catch (err) {
+            console.error(`Error loading more ${stateKey}:`, err);
+            toast.error(`추가 ${stateKey === 'drinks' ? '음료' : '디저트'}를 불러오는 데 실패했습니다.`);
+
+            setPagination((prev) => ({
+                ...prev,
+                [stateKey]: {
+                    ...prev[stateKey],
+                    isLoading: false,
+                },
+            }));
         }
     };
 
@@ -119,11 +203,11 @@ function Order() {
             <ColumnHeader title="Order" className="pt-[68px]" />
             <div className="px-5">
                 <MenuTab activeTab={activeTab} onTabChange={handleTabChange} />
-                
+
                 {error ? (
                     <div className="text-center py-8">
                         <p className="text-red-500 mb-4">{error}</p>
-                        <button 
+                        <button
                             onClick={() => fetchItems(activeTab, 0, false)}
                             className="px-4 py-2 bg-starbucks-green text-white rounded-md hover:bg-starbucks-dark-green transition-colors"
                         >
@@ -144,10 +228,10 @@ function Order() {
                         className="overflow-y-auto"
                         style={{ overflow: 'visible' }}
                     >
-                        <MenuList 
-                            activeTab={activeTab} 
-                            drinkItems={activeTab === '음료' ? currentItems : []} 
-                            dessertItems={activeTab === '디저트' ? currentItems : []} 
+                        <MenuList
+                            activeTab={activeTab}
+                            drinkItems={activeTab === '음료' ? allDrinks : []}
+                            dessertItems={activeTab === '디저트' ? allDesserts : []}
                         />
                     </InfiniteScroll>
                 )}
