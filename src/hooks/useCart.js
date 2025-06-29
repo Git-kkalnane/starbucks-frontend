@@ -11,7 +11,7 @@ import { starbucksStorage } from '../store/starbucksStorage';
  * @param {Object} options.options - 선택된 옵션들
  * @param {Function} options.calculateOptionsTotal - 옵션 총 가격 계산 함수
  * @param {number} options.quantity - 선택된 수량
- * @param {Function} options.calculateTotal - 총 가격 계산 함수
+ * @param {Function} calculateFinalPriceWithOptions - 모든 옵션을 포함한 가격 계산 함수
  * @returns {Object} 장바구니 관련 함수들
  */
 export const useCart = (
@@ -23,7 +23,7 @@ export const useCart = (
         options,
         calculateOptionsTotal,
         quantity,
-        calculateTotal,
+        calculateFinalPriceWithOptions,
     },
 ) => {
     /**
@@ -55,25 +55,26 @@ export const useCart = (
                     options: Array.isArray(options) ? [...options] : [],
                     cupSize: cupSize || 'tall',
                     quantity: typeof quantity === 'number' ? quantity : 1,
-                    totalPrice: typeof calculateTotal === 'function' ? calculateTotal() : 0,
+                    priceWithOptions:
+                        typeof calculateFinalPriceWithOptions === 'function' ? calculateFinalPriceWithOptions() : 0,
                     addedAt: new Date().toISOString(),
                 };
 
                 console.log('장바구니에 추가:', cartItem);
-                
+
                 // 액션 생성자를 사용해 장바구니에 추가
                 addToCart(cartItem);
-                
+
                 // 스토리지에도 장바구니 아이템 업데이트
                 starbucksStorage.addCart(cartItem);
-                
+
                 return true;
             } catch (error) {
                 console.error('장바구니 추가 중 오류 발생:', error);
                 return false;
             }
         },
-        [menuItem, cupSize, options, quantity, calculateTotal],
+        [menuItem, cupSize, options, quantity, calculateFinalPriceWithOptions],
     );
 
     return {
@@ -107,9 +108,7 @@ export const useCartOperations = () => {
     const updateCartItemQuantity = useCallback((itemId, newQuantity, updateCartItem) => {
         updateCartItem(itemId, { quantity: newQuantity });
         const currentCart = starbucksStorage.getCart();
-        const updatedCart = currentCart.map((item) =>
-            item.id === itemId ? { ...item, quantity: newQuantity } : item,
-        );
+        const updatedCart = currentCart.map((item) => (item.id === itemId ? { ...item, quantity: newQuantity } : item));
         starbucksStorage.setCart(updatedCart);
     }, []);
 

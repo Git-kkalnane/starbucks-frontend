@@ -61,14 +61,14 @@ export const useOrderActions = (
         quantity,
     },
 ) => {
-    const calculateTotal = () => {
+    const calculateFinalPriceWithOptions = () => {
         let total = menuItem.price;
         total += calculateCupSizePrice(cupSize, availableCupSizes);
         total += calculateCoffeePrice();
         // Use calculateOptionsTotal if provided, otherwise default to 0
         const optionsTotal = calculateOptionsTotal ? calculateOptionsTotal() : 0;
         total += optionsTotal;
-        return total * quantity;
+        return total;
     };
 
     // Use the new useCart hook for cart-related operations
@@ -79,7 +79,7 @@ export const useOrderActions = (
         options,
         calculateOptionsTotal,
         quantity,
-        calculateTotal,
+        calculateFinalPriceWithOptions,
     });
 
     const handleOrder = () => {
@@ -88,12 +88,12 @@ export const useOrderActions = (
             espressoShots,
             options,
             quantity,
-            price: calculateTotal(),
+            price: calculateFinalPriceWithOptions(),
         });
     };
 
     return {
-        calculateTotal,
+        calculateFinalPriceWithOptions,
         handleAddToCart,
         handleOrder,
     };
