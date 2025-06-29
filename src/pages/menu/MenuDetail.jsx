@@ -39,11 +39,11 @@ function MenuDetail() {
     const [initTemperatureOption, setInitTemperatureOption] = useState('');
     const itemType = useLocation().state.itemType;
 
-    // Update temperatureOption when isIced changes
+    // isIced 상태가 변경될 때 temperatureOption 업데이트
     useEffect(() => {
         if (menuItem) {
-            const temperatureOption = isIced ? 'iced' : 'hot';
-            setMenuItem((prev) => ({
+            const temperatureOption = isIced ? TemperatureDisplayOption.ICE_ONLY : TemperatureDisplayOption.HOT_ONLY;
+            setMenuItem(prev => ({
                 ...prev,
                 temperatureOption,
                 isIce: isIced,
@@ -51,8 +51,10 @@ function MenuDetail() {
         }
     }, [isIced]);
 
-    // Fetch menu item using the itemId from URL
+    // URL의 itemId를 사용하여 메뉴 아이템 가져오기
     useEffect(() => {
+        const abortController = new AbortController();
+        
         const fetchMenuItem = async () => {
             if (!itemId) {
                 console.warn('No menu item ID provided, using fallback data');
@@ -63,37 +65,57 @@ function MenuDetail() {
             }
 
             try {
-                console.log(`itemType: ${itemType}`);
-                const itemData = await OrderQueryService.fetchItemDetail(itemId, itemType);
+                console.log(`Fetching item ${itemId} of type ${itemType}`);
+                const itemData = await OrderQueryService.fetchItemDetail(itemId, itemType, { signal: abortController.signal });
 
                 if (itemData) {
                     console.log('Fetched menu item:', itemData);
+                    
+                    // 사용 가능한 옵션을 기반으로 초기 온도 상태 결정
+                    const hasIceOption = itemData.temperatureOptions?.includes('ICE');
+                    const hasHotOption = itemData.temperatureOptions?.includes('HOT');
+                    
+                    let initialIsIced = hasIceOption;
+                    
+                    // 두 옵션이 모두 사용 가능한 경우, 백엔드의 기본값을 사용하거나 기본값을 아이스로 설정
+                    if (hasIceOption && hasHotOption) {
+                        initialIsIced = itemData.defaultTemperature === TemperatureDisplayOption.ICE_ONLY;
+                    }
+                    
                     const newItem = {
                         ...itemData,
-
-                        temperatureOption: itemData.temperatureOptions?.includes('ICE') ? 'iced' : 'hot',
-                        isIce: itemData.temperatureOptions?.includes('ICE'),
+                        temperatureOption: itemData.defaultTemperature || 
+                                         (hasIceOption ? TemperatureDisplayOption.ICE_ONLY : TemperatureDisplayOption.HOT_ONLY),
+                        isIce: initialIsIced,
                     };
 
                     setMenuItem(newItem);
-                    setIsIced(newItem.isIce);
-                    console.log('newItem: ->', newItem);
-                    setInitTemperatureOption(newItem.defaultTemperature);
+                    setIsIced(initialIsIced);
+                    setInitTemperatureOption(newItem.temperatureOption);
                 } else {
                     throw new Error('No data received from server');
                 }
             } catch (err) {
+                if (abortController.signal.aborted) {
+                    console.log('Fetch aborted');
+                    return;
+                }
                 console.error('Error fetching menu item:', err);
-                setError('메뉴 정보를 불러오는 데 실패했습니다.');
-                // Fallback to default item
+                setError('메뉴 정보를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
                 setMenuItem(defaultItem);
                 setIsIced(defaultItem.isIce);
             } finally {
-                setIsLoading(false);
+                if (!abortController.signal.aborted) {
+                    setIsLoading(false);
+                }
             }
         };
 
         fetchMenuItem();
+
+        return () => {
+            abortController.abort();
+        };
     }, [itemId]);
     if (isLoading || !menuItem) {
         return (
@@ -107,7 +129,7 @@ function MenuDetail() {
 
     return (
         <CommonLayout className="flex flex-col min-h-screen">
-            {/* Main content area with minimum height and flexible growth */}
+            {/* 최소 높이와 유연한 성장을 가진 메인 콘텐츠 영역 */}
             <div className="flex-1 min-h-0 flex flex-col">
                 <div className="overflow-y-auto flex-1">
                     <MenuHeader
@@ -156,7 +178,7 @@ function MenuDetail() {
                     </div>
                 </div>
 
-                {/* Bottom action button container */}
+                {/* 하단 액션 버튼 컨테이너 */}
                 <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3">
                     <div className="max-w-md mx-auto w-full">
                         <OrderActionBtn
