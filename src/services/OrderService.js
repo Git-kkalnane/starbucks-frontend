@@ -1,76 +1,195 @@
 import axios from 'axios';
+import {
+    getSizeOptionByName,
+    getTemperatureDisplayOption,
+    mapTemperatureOption,
+} from '../_utils/constants/beverageOptions';
+import ItemType from '../_utils/constants/itemType';
+
+const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
+
+const api = axios.create({
+    baseURL: URL + API_VERSION,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 
 /**
- * 메뉴 데이터를 관리하는 서비스 모듈
+ * API 응답 데이터를 프론트엔드에 적합한 형식으로 변환합니다.
+ * @param {Object} apiData - API 응답 데이터
+ * @returns {Array} 변환된 아이템 배열
  */
+const transformItemData = (apiData) => {
+    if (!apiData?.items) return [];
 
-const transformDrinkData = (data) => {
-    return data.results.map((page) => {
-        const properties = page.properties;
-        return {
-            id: properties['음료ID']?.number ?? 0,
-            koreanName: properties['이름']?.title?.[0]?.plain_text ?? '',
-            englishName: properties['영문 이름']?.rich_text?.[0]?.plain_text ?? '',
-            itemType: 'beverage',
-            category: properties['카테고리']?.select?.name ?? '',
-            price: properties['가격']?.number ?? 0,
-            description: properties['설명']?.rich_text?.[0]?.plain_text ?? '',
-            temperatureOption: properties['ice?']?.select?.name ?? 'Hot',
-            isCoffee: properties['원두 사용?']?.select?.name ?? 'No',
-            cupSize: properties['컵크기']?.select?.name ?? '',
-            options: properties['옵션']?.multi_select?.map((option) => option.name) ?? [],
-            img: {
-                hot: properties['hot URL']?.rich_text?.[0]?.plain_text ?? '',
-                cold: properties['ice URL']?.rich_text?.[0]?.plain_text ?? '',
-            },
-        };
-    });
+    return apiData.items.map((item) => ({
+        id: item.id,
+        koreanName: item.nameKo,
+        englishName: item.nameEn,
+        price: item.price,
+        img: item.iceImageUrl || item.hotImageUrl || item.dessertImageUrl || '',
+        itemType: ItemType.fromString(item.type),
+    }));
 };
-const transformDessertData = (data) => {
-    return data.results.map((page) => {
-        const properties = page.properties;
-        return {
-            id: properties['푸드ID']?.number ?? 0,
-            koreanName: properties['이름']?.title?.[0]?.plain_text ?? '',
-            englishName: properties['영문 이름']?.rich_text?.[0]?.plain_text ?? '',
-            category: properties['카테고리']?.select?.name ?? '',
-            itemType: 'dessert',
-            price: properties['가격']?.number ?? 0,
-            description: properties['메뉴 설명']?.rich_text?.[0]?.plain_text ?? '',
-            quantity: properties['수량']?.number ?? 0,
-            customerStatus: properties['상태(손님 창)']?.formula?.string ?? '',
-            ownerStatus: properties['상태(오너)']?.formula?.string ?? '',
-            img: properties['img URL']?.rich_text?.[0]?.plain_text ?? '',
-        };
-    });
+
+/**
+ * API 응답을 프론트엔드에서 사용할 음료 상세 데이터로 변환합니다.
+ * @param {Object} item - API에서 받은 음료 상세 데이터
+ * @returns {Object|null} 변환된 음료 상세 데이터
+ */
+const transformBeverageDetailData = (item) => {
+    if (!item) return null;
+
+    // 지원되는 크기 옵션을 매핑합니다.
+    const mapSizeOptions = (sizes = []) => {
+        return sizes.map((size) => getSizeOptionByName(size)).filter(Boolean); // 유효한 옵션만 필터링
+    };
+
+    // 지원되는 온도 옵션을 매핑하고 필터링합니다.
+    const temperatureOptions = (item.supportedTemperatures || [])
+        .map((temp) => mapTemperatureOption(temp))
+        .filter(Boolean);
+
+    // 기본 온도 표시 옵션을 결정합니다.
+    const defaultTemperature = getTemperatureDisplayOption(temperatureOptions);
+
+    return {
+        id: item.id,
+        koreanName: item.nameKo,
+        englishName: item.nameEn,
+        description: item.description,
+        price: item.price,
+        isCoffee: item.isCoffee,
+        img: item.imageUrl,
+        category: item.category,
+        status: item.status,
+        sizeOptions: mapSizeOptions(item.supportedSizes),
+        temperatureOptions,
+        defaultTemperature,
+    };
+};
+
+const transformDessertDetailData = (item) => {
+    if (!item) return null;
+
+    return {
+        id: item.id,
+        koreanName: item.nameKo,
+        englishName: item.nameEn,
+        description: item.description,
+        price: item.price,
+        category: item.category,
+        img: item.imageUrl,
+    };
 };
 
 export const OrderQueryService = {
-    // TODO: 서버 개발 후 로직 변경 예정 (임시로 notion API사용)
-    async fetchDrinkItems() {
+    async fetchItemDetail(itemId, itemType, options = {}) {
         try {
-            const response = await axios.post(
-                '/api/drinks/v1/databases/215f1eb21fb18087b1b0ef786107a759/query',
-                {},
-                { headers: { 'Content-Type': 'application/json' } },
-            );
-            return transformDrinkData(response.data);
+            let response;
+            if (itemType === ItemType.BEVERAGE) {
+                response = await api.get(`/items/drinks/${itemId}`, options);
+                const _shopData = transformBeverageDetailData(response.data.result || response.data.data);
+                console.log('API response shopData: ', _shopData);
+                return _shopData;
+            } else if (itemType === ItemType.DESSERT) {
+                response = await api.get(`/items/desserts/${itemId}`, options);
+                const _shopData = transformDessertDetailData(response.data.result || response.data.data);
+                console.log('API response shopData: ', _shopData);
+                return _shopData;
+            }
         } catch (error) {
-            console.error('Failed to fetch drinks:', error);
+            if (axios.isCancel(error)) {
+                console.log('Request canceled:', error.message);
+                throw new Error('Request was canceled');
+            }
+            console.error(`Failed to fetch shop details for itemId ${itemId}:`, error);
             throw error;
         }
     },
-    // TODO: 서버 개발 후 로직 변경 예정 (임시로 notion API사용)
-    async fetchDessertItems() {
+
+    async fetchDrinkItems(page = 0, size = 10, options = {}) {
         try {
-            const response = await axios.post(
-                '/api/desserts/v1/databases/215f1eb21fb18031a88fc7362e70d34a/query',
-                {},
-                { headers: { 'Content-Type': 'application/json' } },
-            );
-            return transformDessertData(response.data);
+            const response = await api.get('/items/drinks', {
+                params: { page, size },
+                signal: options.signal,
+            });
+
+            const paginationData = response.data.pagination || {
+                currentPage: page,
+                pageSize: size,
+                totalCount: response.data.result?.length || 0,
+                totalPages: Math.ceil((response.data.result?.length || 0) / size) || 1,
+            };
+
+            return {
+                items: transformItemData(response.data.result || response.data.data),
+                pagination: paginationData,
+            };
         } catch (error) {
-            console.error('Failed to fetch desserts:', error);
+            if (axios.isCancel(error)) {
+                console.log('Request canceled:', error.message);
+                throw new Error('Request was canceled');
+            }
+            console.error('Error fetching drink items:', error);
+            throw error;
+        }
+    },
+
+    async fetchBeverageItemDetail(itemId, options = {}) {
+        try {
+            const response = await api.get(`/items/drinks/${itemId}`, options);
+            const _shopData = transformBeverageDetailData(response.data.result || response.data.data);
+            console.log('API response shopData: ', _shopData);
+            return _shopData;
+        } catch (error) {
+            if (axios.isCancel(error)) {
+                console.log('Request canceled:', error.message);
+                throw new Error('Request was canceled');
+            }
+            console.error(`Failed to fetch shop details for itemId ${itemId}:`, error);
+            throw error;
+        }
+    },
+
+    async fetchDessertItems(page = 0, size = 10, options = {}) {
+        try {
+            const response = await api.get('/items/desserts', {
+                params: { page, size },
+                signal: options.signal,
+            });
+
+            const paginationData = response.data.pagination || {
+                currentPage: page,
+                pageSize: size,
+                totalCount: response.data.result?.length || 0,
+                totalPages: Math.ceil((response.data.result?.length || 0) / size) || 1,
+            };
+
+            return {
+                items: transformItemData(response.data.result || response.data.data),
+                pagination: paginationData,
+            };
+        } catch (error) {
+            if (axios.isCancel(error)) {
+                console.log('Request canceled:', error.message);
+                throw new Error('Request was canceled');
+            }
+            console.error('Error fetching dessert items:', error);
+            throw error;
+        }
+    },
+
+    async fetchDessertItemDetail(itemId, options = {}) {
+        try {
+            const response = await api.get(`/items/desserts/${itemId}`);
+            const transformedData = transformDessertDetailData(response.data.result);
+            console.log('Dessert detail data:', transformedData);
+            return transformedData;
+        } catch (error) {
+            console.error(`Failed to fetch dessert details for itemId ${itemId}:`, error);
             throw error;
         }
     },

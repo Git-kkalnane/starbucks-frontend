@@ -5,9 +5,7 @@ const MenuItem = ({ item, className }) => {
     const navigate = useNavigate();
 
     const handleItemClick = () => {
-        navigate(`/order/menu/${item.id}`, {
-            state: { menuItem: item }
-        });
+        navigate(`/order/menu/${item.id}`, { state: { itemType: item.itemType } });
     };
 
     return (

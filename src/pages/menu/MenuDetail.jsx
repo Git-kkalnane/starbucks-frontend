@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import CommonLayout from '../../components/layouts/CommonLayout';
 import MenuHeader from '../../components/menu/menu_detail/MenuHeader';
 import MenuInfo from '../../components/menu/menu_detail/MenuInfo';
 import OrderActionBtn from '../../components/menu/menu_detail/MenuDetailFooter';
 import TemperatureToggle from '../../components/menu/menu_detail/TemperatureToggle';
 import TemperatureDisplay from '../../components/menu/menu_detail/TemperatureDisplay';
+import { OrderQueryService } from '../../services/OrderService';
+import { TemperatureDisplayOption } from '../../_utils/constants/beverageOptions';
+import ItemType from '../../_utils/constants/itemType';
 
 const defaultItem = {
     id: 0,
@@ -28,55 +31,92 @@ const defaultItem = {
 
 function MenuDetail() {
     const navigate = useNavigate();
-    const location = useLocation();
+    const { id: itemId } = useParams();
     const [isIced, setIsIced] = useState(true);
     const [menuItem, setMenuItem] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [initTemperatureOption, setInitTemperatureOption] = useState('');
+    const itemType = useLocation().state.itemType;
 
-    const initTemperatureOption = location.state?.menuItem?.temperatureOption;
-
-    // Update temperatureOption when isIced changes
+    // isIced 상태가 변경될 때 temperatureOption 업데이트
     useEffect(() => {
         if (menuItem) {
-            const temperatureOption = isIced ? 'iced' : 'hot';
-            setMenuItem((prev) => ({
+            const temperatureOption = isIced ? TemperatureDisplayOption.ICE_ONLY : TemperatureDisplayOption.HOT_ONLY;
+            setMenuItem(prev => ({
                 ...prev,
                 temperatureOption,
                 isIce: isIced,
             }));
-            // console.log('isIced changed:', temperatureOption);
         }
     }, [isIced]);
 
-    // Get menu item from navigation state or fetch it
+    // URL의 itemId를 사용하여 메뉴 아이템 가져오기
     useEffect(() => {
-        if (location.state?.menuItem) {
-            console.log('Menu item received:', location.state.menuItem);
-            const item = location.state.menuItem;
-            setMenuItem(item);
-            if (initTemperatureOption === 'Hot only') {
-                setIsIced(false);
-                // console.log('item.temperatureOption === "Hot only');
-            } else if (initTemperatureOption === 'Ice only') {
-                setIsIced(true);
-            }
-            // Ice/Hot인 경우
-            else if (item.temperatureOption) {
-                console.log('else if (item.temperatureOption):');
-                setIsIced(item.temperatureOption === 'iced');
+        const abortController = new AbortController();
+        
+        const fetchMenuItem = async () => {
+            if (!itemId) {
+                console.warn('No menu item ID provided, using fallback data');
+                setMenuItem(defaultItem);
+                setIsIced(defaultItem.isIce);
+                setIsLoading(false);
+                return;
             }
 
-            setIsLoading(false);
-        } else {
-            // Fallback: If no menuItem in state, use a default item
-            // In a real app, you might want to fetch the item using the ID from the URL
-            console.warn('No menu item data received, using fallback data');
+            try {
+                console.log(`Fetching item ${itemId} of type ${itemType}`);
+                const itemData = await OrderQueryService.fetchItemDetail(itemId, itemType, { signal: abortController.signal });
 
-            setMenuItem(defaultItem);
-            setIsIced(defaultItem.isIce);
-            setIsLoading(false);
-        }
-    }, [location.state]);
+                if (itemData) {
+                    console.log('Fetched menu item:', itemData);
+                    
+                    // 사용 가능한 옵션을 기반으로 초기 온도 상태 결정
+                    const hasIceOption = itemData.temperatureOptions?.includes('ICE');
+                    const hasHotOption = itemData.temperatureOptions?.includes('HOT');
+                    
+                    let initialIsIced = hasIceOption;
+                    
+                    // 두 옵션이 모두 사용 가능한 경우, 백엔드의 기본값을 사용하거나 기본값을 아이스로 설정
+                    if (hasIceOption && hasHotOption) {
+                        initialIsIced = itemData.defaultTemperature === TemperatureDisplayOption.ICE_ONLY;
+                    }
+                    
+                    const newItem = {
+                        ...itemData,
+                        temperatureOption: itemData.defaultTemperature || 
+                                         (hasIceOption ? TemperatureDisplayOption.ICE_ONLY : TemperatureDisplayOption.HOT_ONLY),
+                        isIce: initialIsIced,
+                    };
+
+                    setMenuItem(newItem);
+                    setIsIced(initialIsIced);
+                    setInitTemperatureOption(newItem.temperatureOption);
+                } else {
+                    throw new Error('No data received from server');
+                }
+            } catch (err) {
+                if (abortController.signal.aborted) {
+                    console.log('Fetch aborted');
+                    return;
+                }
+                console.error('Error fetching menu item:', err);
+                setError('메뉴 정보를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
+                setMenuItem(defaultItem);
+                setIsIced(defaultItem.isIce);
+            } finally {
+                if (!abortController.signal.aborted) {
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        fetchMenuItem();
+
+        return () => {
+            abortController.abort();
+        };
+    }, [itemId]);
     if (isLoading || !menuItem) {
         return (
             <CommonLayout>
@@ -87,15 +127,23 @@ function MenuDetail() {
         );
     }
 
-    console.log(`${menuItem.koreanName} temperatureOption:`, initTemperatureOption);
-
     return (
         <CommonLayout className="flex flex-col min-h-screen">
-            {/* Main content area with minimum height and flexible growth */}
+            {/* 최소 높이와 유연한 성장을 가진 메인 콘텐츠 영역 */}
             <div className="flex-1 min-h-0 flex flex-col">
                 <div className="overflow-y-auto flex-1">
                     <MenuHeader
-                        imageUrl={isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || ''}
+                        imageUrl={
+                            itemType === ItemType.BEVERAGE
+                                ? initTemperatureOption === TemperatureDisplayOption.ICE_ONLY
+                                    ? menuItem.img?.ice || ''
+                                    : initTemperatureOption === TemperatureDisplayOption.HOT_ONLY
+                                    ? menuItem.img?.hot || ''
+                                    : isIced
+                                    ? menuItem.img?.ice || ''
+                                    : menuItem.img?.hot || ''
+                                : menuItem.img.defaultUrl || ''
+                        }
                         name={menuItem.koreanName}
                         onBack={() => navigate(-1)}
                     />
@@ -108,26 +156,29 @@ function MenuDetail() {
                             category={menuItem.category}
                             size={menuItem.size}
                         />
-                        <div className="mt-4 mb-24">
-                            {initTemperatureOption === 'Ice only' || initTemperatureOption === 'Hot only' ? (
-                                <TemperatureDisplay
-                                    isIced={initTemperatureOption === 'Ice only'}
-                                    isActive={true}
-                                    className="max-w-xs mx-auto"
-                                />
-                            ) : (
-                                <TemperatureToggle
-                                    isIced={isIced}
-                                    setIsIced={setIsIced}
-                                    disabled={!menuItem.isCoffee}
-                                    className={!menuItem.isCoffee ? 'opacity-70' : ''}
-                                />
-                            )}
-                        </div>
+                        {itemType !== ItemType.DESSERT && (
+                            <div className="mt-4 mb-24">
+                                {initTemperatureOption === TemperatureDisplayOption.HOT_ONLY ||
+                                initTemperatureOption === TemperatureDisplayOption.ICE_ONLY ? (
+                                    <TemperatureDisplay
+                                        isIced={initTemperatureOption === TemperatureDisplayOption.ICE_ONLY}
+                                        isActive={true}
+                                        className="max-w-xs mx-auto"
+                                    />
+                                ) : (
+                                    <TemperatureToggle
+                                        isIced={isIced}
+                                        setIsIced={setIsIced}
+                                        disabled={!menuItem.isCoffee}
+                                        className={!menuItem.isCoffee ? 'opacity-70' : ''}
+                                    />
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
 
-                {/* Bottom action button container */}
+                {/* 하단 액션 버튼 컨테이너 */}
                 <div className="sticky bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3">
                     <div className="max-w-md mx-auto w-full">
                         <OrderActionBtn

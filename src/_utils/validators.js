@@ -50,13 +50,13 @@ export const validateCartItem = (item) => {
 export const validateStore = (store) => {
     if (!store) return false;
     // TODO 필드명 꼭 챙겨 보기
-    return typeof store === 'object' && typeof store.storeId === 'string' && typeof store.name === 'string';
+    return typeof store === 'object' && typeof store.storeId === 'number' && typeof store.name === 'string';
 };
 
 export const validateOrder = (order) => {
     if (!order || typeof order !== 'object') return false;
     return (
-        typeof order.id === 'string' &&
+        typeof order.id === 'number' &&
         Array.isArray(order.items) &&
         order.items.every(validateCartItem) &&
         typeof order.total === 'number' &&
