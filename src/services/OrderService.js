@@ -5,16 +5,11 @@ import {
     mapTemperatureOption,
 } from '../_utils/constants/beverageOptions';
 import ItemType from '../_utils/constants/itemType';
+import { validateRequestOrderData } from '../_utils/validators';
+import api from './api';
 
 const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
-
-const api = axios.create({
-    baseURL: URL + API_VERSION,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
 
 /**
  * API 응답 데이터를 프론트엔드에 적합한 형식으로 변환합니다.
@@ -191,6 +186,48 @@ export const OrderQueryService = {
         } catch (error) {
             console.error(`Failed to fetch dessert details for itemId ${itemId}:`, error);
             throw error;
+        }
+    },
+};
+
+export const OrderCommandService = {
+    /**
+     * 주문을 생성하는 API를 호출합니다.
+     * @param {Object} orderData - 주문 데이터
+     * @param {number} orderData.storeId - 매장 ID
+     * @param {string} orderData.pickupType - 픽업 타입 (예: 'STORE_PICKUP')
+     * @param {number} orderData.orderTotalPrice - 주문 총 금액
+     * @param {string} orderData.orderStatus - 주문 상태 (예: 'PLACED')
+     * @param {Array} orderData.orderItems - 주문 항목 배열
+     * @returns {Promise<Object>} 생성된 주문 정보
+     * @throws {Error} 유효성 검사 실패 시 에러를 던집니다.
+     */
+    async createOrder(orderData, options = {}) {
+        try {
+            // 주문 데이터 유효성 검사
+            validateRequestOrderData(orderData);
+            // const token = starbucksStorage.getAccessToken();
+            // api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            const response = await api.post('/orders', orderData);
+            console.log('Order created successfully:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to create order:', error);
+
+            // 에러 메시지 추출
+            let errorMessage = '주문 생성 중 오류가 발생했습니다.';
+            if (error.response) {
+                // 서버에서 응답이 왔으나 에러인 경우
+                errorMessage = error.response.data.message || errorMessage;
+            } else if (error.request) {
+                // 요청이 전송되었지만 응답이 없는 경우
+                errorMessage = '서버로부터 응답이 없습니다. 네트워크 상태를 확인해주세요.';
+            }
+
+            const errorWithMessage = new Error(errorMessage);
+            errorWithMessage.response = error.response;
+            throw errorWithMessage;
         }
     },
 };
