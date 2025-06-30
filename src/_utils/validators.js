@@ -1,4 +1,6 @@
 // Validation helpers
+import ItemType from './constants/itemType';
+
 export const validateLoading = (loading) => {
     if (typeof loading !== 'boolean') {
         console.error('Invalid loading value:', loading);
@@ -118,10 +120,16 @@ export const validateRequestOrderData = (orderData) => {
             throw new Error(`주문 항목 ${index + 1}의 단가가 유효하지 않습니다.`);
         }
 
-        // 아이템 타입 검증
-        const validItemTypes = ['BEVERAGE', 'DESSERT', 'FOOD'];
+        // 아이템 타입 검증 (ItemType enum 사용)
+        const validItemTypes = Object.values(ItemType).filter(
+            (value) => typeof value === 'string' && value !== 'fromString'
+        );
+
         if (!validItemTypes.includes(item.itemType)) {
-            throw new Error(`주문 항목 ${index + 1}의 아이템 타입이 유효하지 않습니다: ${item.itemType}`);
+            throw new Error(
+                `주문 항목 ${index + 1}의 아이템 타입이 유효하지 않습니다: ${item.itemType}. ` +
+                `유효한 타입: ${validItemTypes.join(', ')}`
+            );
         }
     });
 };
