@@ -46,7 +46,7 @@ function MenuConfigurator() {
         updateQuantity(value);
     };
 
-    const { calculateTotal, handleAddToCart, handleOrder } = useOrderActions(menuItem, {
+    const { calculateFinalPriceWithOptions, handleAddToCart, handleOrder } = useOrderActions(menuItem, {
         cupSize,
         availableCupSizes,
         calculateCupSizePrice,
@@ -58,13 +58,13 @@ function MenuConfigurator() {
     });
 
     const onAddToCart = () => {
-        console.log('User state:', userState);
         handleAddToCart(userActions.addToCart, currentImg);
         navigate('/order');
     };
 
     const onOrder = () => {
-        handleOrder();
+        handleAddToCart(userActions.addToCart, currentImg);
+        navigate('/cart');
     };
 
     return (
@@ -131,7 +131,7 @@ function MenuConfigurator() {
                 <ConfiguratorFooter
                     quantity={quantity}
                     onQuantityChange={handleQuantityChange}
-                    totalPrice={calculateTotal()}
+                    totalPrice={calculateFinalPriceWithOptions()}
                     onAddToCart={onAddToCart}
                     onOrder={onOrder}
                 />

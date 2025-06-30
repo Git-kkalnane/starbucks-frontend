@@ -39,11 +39,18 @@ function MenuDetail() {
     const [initTemperatureOption, setInitTemperatureOption] = useState('');
     const itemType = useLocation().state.itemType;
 
+    useEffect(() => {
+        if (initTemperatureOption === TemperatureDisplayOption.ICE_ONLY) {
+            setIsIced(true);
+        } else if (initTemperatureOption === TemperatureDisplayOption.HOT_ONLY) {
+            setIsIced(false);
+        }
+    }, [initTemperatureOption]);
     // isIced 상태가 변경될 때 temperatureOption 업데이트
     useEffect(() => {
         if (menuItem) {
             const temperatureOption = isIced ? TemperatureDisplayOption.ICE_ONLY : TemperatureDisplayOption.HOT_ONLY;
-            setMenuItem(prev => ({
+            setMenuItem((prev) => ({
                 ...prev,
                 temperatureOption,
                 isIce: isIced,
@@ -54,7 +61,7 @@ function MenuDetail() {
     // URL의 itemId를 사용하여 메뉴 아이템 가져오기
     useEffect(() => {
         const abortController = new AbortController();
-        
+
         const fetchMenuItem = async () => {
             if (!itemId) {
                 console.warn('No menu item ID provided, using fallback data');
@@ -66,26 +73,29 @@ function MenuDetail() {
 
             try {
                 console.log(`Fetching item ${itemId} of type ${itemType}`);
-                const itemData = await OrderQueryService.fetchItemDetail(itemId, itemType, { signal: abortController.signal });
+                const itemData = await OrderQueryService.fetchItemDetail(itemId, itemType, {
+                    signal: abortController.signal,
+                });
 
                 if (itemData) {
                     console.log('Fetched menu item:', itemData);
-                    
+
                     // 사용 가능한 옵션을 기반으로 초기 온도 상태 결정
                     const hasIceOption = itemData.temperatureOptions?.includes('ICE');
                     const hasHotOption = itemData.temperatureOptions?.includes('HOT');
-                    
+
                     let initialIsIced = hasIceOption;
-                    
+
                     // 두 옵션이 모두 사용 가능한 경우, 백엔드의 기본값을 사용하거나 기본값을 아이스로 설정
                     if (hasIceOption && hasHotOption) {
                         initialIsIced = itemData.defaultTemperature === TemperatureDisplayOption.ICE_ONLY;
                     }
-                    
+
                     const newItem = {
                         ...itemData,
-                        temperatureOption: itemData.defaultTemperature || 
-                                         (hasIceOption ? TemperatureDisplayOption.ICE_ONLY : TemperatureDisplayOption.HOT_ONLY),
+                        temperatureOption:
+                            itemData.defaultTemperature ||
+                            (hasIceOption ? TemperatureDisplayOption.ICE_ONLY : TemperatureDisplayOption.HOT_ONLY),
                         isIce: initialIsIced,
                     };
 
@@ -184,13 +194,17 @@ function MenuDetail() {
                         <OrderActionBtn
                             price={menuItem.price}
                             onOrder={() => {
+                                console.log('initTemperatureOption', initTemperatureOption);
+                                // setIsIced(initTemperatureOption === TemperatureDisplayOption.ICE_ONLY);
+
                                 navigate(`/order/menu/${menuItem.id}/configurator`, {
                                     state: {
                                         menuItem: {
                                             ...menuItem,
-                                            isIced,
                                         },
-                                        img: isIced ? menuItem.img?.cold || '' : menuItem.img?.hot || '',
+                                        img:
+                                            menuItem.img.defaultUrl ||
+                                            (isIced ? menuItem.img?.ice || '' : menuItem.img?.hot || ''),
                                     },
                                 });
                             }}

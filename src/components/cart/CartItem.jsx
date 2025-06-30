@@ -37,13 +37,13 @@ const ItemImage = ({ src, alt }) => (
 );
 
 // Sub-component for the item info
-const ItemInfo = ({ koreanName, englishName, option, totalPrice }) => (
+const ItemInfo = ({ koreanName, englishName, option, priceWithOptions }) => (
     <div className="flex-1 min-w-0">
         <h3 className="font-bold text-[#222] text-base truncate">{koreanName}</h3>
         <p className="text-xs text-disabled-string mb-1 truncate">{englishName}</p>
         <div className="flex flex-row items-center justify-between text-sm text-[#a6a6a6] font-medium mb-2">
             {option}
-            <span className="ml-2">{totalPrice.toLocaleString()}원</span>
+            <span className="ml-2">{priceWithOptions.toLocaleString()}원</span>
         </div>
         <button
             className="my-4 underline cursor-pointer text-[#98714e] text-sm hover:text-[#7a5c3d] transition-colors"
@@ -91,7 +91,7 @@ const CartItem = ({ item, isSelected, onToggleSelect, onRemove, onChangeQty, cla
                         koreanName={item.item.koreanName}
                         englishName={item.item.englishName}
                         option={item.temperatureOption + ' | ' + item.cupSize}
-                        totalPrice={item.totalPrice}
+                        priceWithOptions={item.priceWithOptions}
                     />
 
                     <div className="my-2 flex flex-row items-center justify-between">
@@ -103,7 +103,7 @@ const CartItem = ({ item, isSelected, onToggleSelect, onRemove, onChangeQty, cla
                             />
                         </div>
                         <span className="font-bold text-black text-lg">
-                            {(item.totalPrice * item.quantity).toLocaleString()}원
+                            {(item.priceWithOptions * item.quantity).toLocaleString()}원
                         </span>
                     </div>
                 </div>

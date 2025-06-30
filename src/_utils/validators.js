@@ -29,7 +29,7 @@ export const validateCartItem = (item) => {
         'options', // Item options
         'cupSize', // Selected cup size
         'quantity', // Quantity of items
-        'totalPrice', // Calculated total price
+        'priceWithOptions', // Calculated option price
     ].every((field) => field in item);
 
     if (!hasRequiredFields) return false;
@@ -44,7 +44,9 @@ export const validateCartItem = (item) => {
     if (!requiredItemFields) return false;
 
     // Validate types
-    return typeof item.quantity === 'number' && typeof item.totalPrice === 'number' && Array.isArray(item.options);
+    return (
+        typeof item.quantity === 'number' && typeof item.priceWithOptions === 'number' && Array.isArray(item.options)
+    );
 };
 
 export const validateStore = (store) => {

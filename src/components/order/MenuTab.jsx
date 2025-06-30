@@ -3,7 +3,7 @@ import React from 'react';
 const MenuTab = ({ activeTab, onTabChange, className }) => {
     const tabs = [
         { id: '음료', label: '음료' },
-        { id: '푸드', label: '푸드' },
+        { id: '디저트', label: '디저트' },
     ];
 
     return (

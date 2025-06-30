@@ -37,7 +37,7 @@ const MenuList = ({ activeTab, drinkItems, dessertItems, className }) => {
         <section className={`px-1 ${className}`}>
             <div className="space-y-4 overflow-y-auto h-[calc(100vh-220px)]">
                 {activeTab === '음료' && drinkItems.map((item) => <MenuItem key={item.id} item={item} />)}
-                {activeTab === '푸드' && dessertItems.map((item) => <MenuItem key={item.id} item={item} />)}
+                {activeTab === '디저트' && dessertItems.map((item) => <MenuItem key={item.id} item={item} />)}
             </div>
         </section>
     );
