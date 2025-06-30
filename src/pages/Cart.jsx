@@ -9,9 +9,11 @@ import CartEmptyView from '../components/cart/CartEmptyView';
 import { useUser } from '../contexts/UserContext';
 import { starbucksStorage } from '../store/starbucksStorage';
 import useAuthRedirect from '../hooks/useAuthRedirect';
+import { OrderCommandService } from '../services/OrderService';
 
 function Cart() {
     const { state, actions } = useUser();
+    const navigate = useNavigate();
 
     const [cart, setCart] = useState(state.cart || []);
     const [selected, setSelected] = useState([]);
@@ -32,7 +34,7 @@ function Cart() {
         selected.length > 0
             ? cart
                   .filter((item) => selected.includes(item.id))
-                  .reduce((sum, item) => sum + item.totalPrice * item.quantity, 0)
+                  .reduce((sum, item) => sum + item.priceWithOptions * item.quantity, 0)
             : 0;
     // 선택/해제
     const toggleSelect = (id) => {
@@ -90,6 +92,41 @@ function Cart() {
         actions.clearCart();
         starbucksStorage.setCart([]);
     };
+    const handleOrder = async () => {
+        const orderData = {
+            storeId: state.selectedStore.storeId,
+            pickupType: 'STORE_PICKUP',
+            orderTotalPrice: selectedTotalPrice,
+            orderStatus: 'PLACED',
+            orderItems: selected.map((id) => {
+                console.log('selected id: ', id);
+                const cartItem = cart.find((item) => item.id === id);
+                console.log('cartId: ', cartItem.id);
+                console.log(`${cartItem.item.koreanName} item price: ${cartItem.item.id}`);
+                return {
+                    itemId: cartItem.item.id,
+                    itemType: cartItem.item.category,
+                    beverageSizeOption: cartItem.size || null,
+                    beverageTemperatureOption: cartItem.temperature || null,
+                    options: cartItem.options || [],
+                    totalPrice: cartItem.priceWithOptions * cartItem.quantity,
+                    itemPrice: cartItem.item.price,
+                    quantity: cartItem.quantity,
+                };
+            }),
+        };
+
+        try {
+            const response = await OrderCommandService.createOrder(orderData);
+            removeSelected();
+
+            navigate('/order', { state: { orderId: response.id } });
+        } catch (error) {
+            console.error('Failed to create order:', error);
+            // You might want to show an error message to the user here
+            alert(`주문 처리 중 오류가 발생했습니다: ${error.message}`);
+        }
+    };
 
     return (
         <CommonLayout>
@@ -117,9 +154,7 @@ function Cart() {
                     selectedCount={selected.length}
                     totalQty={selectedTotalQty}
                     totalPrice={selectedTotalPrice}
-                    onOrder={() => {
-                        /* 주문하기 로직 */
-                    }}
+                    onOrder={handleOrder}
                 />
             </div>
         </CommonLayout>
