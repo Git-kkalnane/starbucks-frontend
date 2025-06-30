@@ -1,6 +1,7 @@
 // src/services/api.js
 import axios from 'axios';
 import { starbucksStorage } from '../store/starbucksStorage';
+import AuthService from './AuthService';
 
 const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
