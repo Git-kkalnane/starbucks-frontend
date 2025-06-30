@@ -1,15 +1,5 @@
-import axios from 'axios';
+import api from './api';
 
-const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
-const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
-
-const api = axios.create({
-    baseURL: URL + API_VERSION,
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    // withCredentials: true, // httpOnly 쿠키를 위해 필요
-});
 // Transform shop data to match frontend data structure
 const transformShopData = (data) => {
     if (!data) return [];

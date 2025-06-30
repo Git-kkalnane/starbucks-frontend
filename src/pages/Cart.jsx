@@ -9,12 +9,16 @@ import CartEmptyView from '../components/cart/CartEmptyView';
 import { useUser } from '../contexts/UserContext';
 import { starbucksStorage } from '../store/starbucksStorage';
 import useAuthRedirect from '../hooks/useAuthRedirect';
+import { OrderCommandService } from '../services/OrderService';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 
 function Cart() {
     const { state, actions } = useUser();
+    const navigate = useNavigate();
 
     const [cart, setCart] = useState(state.cart || []);
     const [selected, setSelected] = useState([]);
+    const [showStoreSelectModal, setShowStoreSelectModal] = useState(false);
 
     useAuthRedirect({
         requireAuth: true,
@@ -32,7 +36,7 @@ function Cart() {
         selected.length > 0
             ? cart
                   .filter((item) => selected.includes(item.id))
-                  .reduce((sum, item) => sum + item.totalPrice * item.quantity, 0)
+                  .reduce((sum, item) => sum + item.priceWithOptions * item.quantity, 0)
             : 0;
     // 선택/해제
     const toggleSelect = (id) => {
@@ -90,13 +94,53 @@ function Cart() {
         actions.clearCart();
         starbucksStorage.setCart([]);
     };
+    const handleOrder = async () => {
+        if (!state.selectedStore) {
+            setShowStoreSelectModal(true);
+            return;
+        }
+
+        const orderData = {
+            storeId: state.selectedStore.storeId,
+            pickupType: 'STORE_PICKUP',
+            orderTotalPrice: selectedTotalPrice,
+            orderStatus: 'PLACED',
+            orderItems: selected.map((id) => {
+                console.log('selected id: ', id);
+                const cartItem = cart.find((item) => item.id === id);
+                console.log('cartId: ', cartItem.id);
+                console.log(`${cartItem.item.koreanName} item price: ${cartItem.item.id}`);
+                return {
+                    itemId: cartItem.item.id,
+                    itemType: cartItem.item.category,
+                    beverageSizeOption: cartItem.size || null,
+                    beverageTemperatureOption: cartItem.temperature || null,
+                    options: cartItem.options || [],
+                    totalPrice: cartItem.priceWithOptions * cartItem.quantity,
+                    itemPrice: cartItem.item.price,
+                    quantity: cartItem.quantity,
+                };
+            }),
+        };
+
+        try {
+            const response = await OrderCommandService.createOrder(orderData);
+            removeSelected();
+
+            navigate('/order', { state: { orderId: response.id } });
+        } catch (error) {
+            console.error('Failed to create order:', error);
+            // You might want to show an error message to the user here
+            alert(`주문 처리 중 오류가 발생했습니다: ${error.message}`);
+        }
+    };
 
     return (
         <CommonLayout>
             {/* <CartHeader title="장바구니" onBack={() => history.back()} /> */}
             <ColumnHeader title="장바구니" bgColor="#2E2926" onBack={() => history.back()} textColor="#fff" />
 
-            <StoreSelectionBanner title="매장 선택" />
+            <StoreSelectionBanner title={state.selectedStore ? state.selectedStore.name : '매장 선택'} />
             <div className="bg-white min-h-screen pt-2">
                 {cart.length > 0 ? (
                     <CartItemList
@@ -111,17 +155,26 @@ function Cart() {
                         onRemoveItem={removeItem}
                     />
                 ) : (
-                    <CartEmptyView />
+                    <CartEmptyView onNavigateToMenu={() => navigate('/order')} />
                 )}
                 <CartSummary
                     selectedCount={selected.length}
                     totalQty={selectedTotalQty}
                     totalPrice={selectedTotalPrice}
-                    onOrder={() => {
-                        /* 주문하기 로직 */
-                    }}
+                    onOrder={handleOrder}
                 />
             </div>
+            {/* 매장 선택 안내 모달 */}
+            <ConfirmationModal
+                open={showStoreSelectModal}
+                title="매장을 선택해주세요"
+                subtitle="주문을 하시려면 먼저 매장을 선택해주세요."
+                onConfirm={() => {
+                    setShowStoreSelectModal(false);
+                    navigate('/order/shop');
+                }}
+                onCancel={() => setShowStoreSelectModal(false)}
+            />
         </CommonLayout>
     );
 }

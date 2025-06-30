@@ -9,6 +9,8 @@ import TemperatureDisplay from '../../components/menu/menu_detail/TemperatureDis
 import { OrderQueryService } from '../../services/OrderService';
 import { TemperatureDisplayOption } from '../../_utils/constants/beverageOptions';
 import ItemType from '../../_utils/constants/itemType';
+import { useUser } from '../../contexts/UserContext';
+import ConfirmLoginModal from '../../components/common/ConfirmationModal';
 
 const defaultItem = {
     id: 0,
@@ -31,9 +33,12 @@ const defaultItem = {
 
 function MenuDetail() {
     const navigate = useNavigate();
+    const { state, actions } = useUser();
+
     const { id: itemId } = useParams();
     const [isIced, setIsIced] = useState(true);
     const [menuItem, setMenuItem] = useState(null);
+    const [showStoreSelectModal, setShowStoreSelectModal] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [initTemperatureOption, setInitTemperatureOption] = useState('');
@@ -194,9 +199,10 @@ function MenuDetail() {
                         <OrderActionBtn
                             price={menuItem.price}
                             onOrder={() => {
-                                console.log('initTemperatureOption', initTemperatureOption);
-                                // setIsIced(initTemperatureOption === TemperatureDisplayOption.ICE_ONLY);
-
+                                if (!state.selectedStore) {
+                                    setShowStoreSelectModal(true);
+                                    return;
+                                }
                                 navigate(`/order/menu/${menuItem.id}/configurator`, {
                                     state: {
                                         menuItem: {
@@ -213,6 +219,18 @@ function MenuDetail() {
                     </div>
                 </div>
             </div>
+
+            {/* 매장 선택 안내 모달 */}
+            <ConfirmLoginModal
+                open={showStoreSelectModal}
+                title="매장을 선택해주세요"
+                subtitle="주문을 하시려면 먼저 매장을 선택해주세요."
+                onConfirm={() => {
+                    setShowStoreSelectModal(false);
+                    navigate('/order/shop');
+                }}
+                onCancel={() => setShowStoreSelectModal(false)}
+            />
         </CommonLayout>
     );
 }
