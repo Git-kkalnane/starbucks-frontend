@@ -37,39 +37,47 @@ function Order() {
         try {
             setIsLoading(true);
             setError(null);
+            
+            // 요청 취소를 위한 AbortController 생성
+            const controller = new AbortController();
+            const { signal } = controller;
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-            // Fetch drinks
-            const drinksData = await OrderQueryService.fetchDrinkItems(0, ITEMS_PER_PAGE, {
-                signal: AbortSignal.timeout(10000),
-            });
-            setAllDrinks(drinksData.items);
-            setPagination((prev) => ({
+            // 음료와 디저트 데이터를 병렬로 가져오기
+            const [drinksResponse, dessertsResponse] = await Promise.all([
+                OrderQueryService.fetchDrinkItems(0, ITEMS_PER_PAGE, { signal }),
+                OrderQueryService.fetchDessertItems(0, ITEMS_PER_PAGE, { signal })
+            ]);
+
+            // 응답을 받았으므로 타임아웃 제거
+            clearTimeout(timeoutId);
+
+            // 음료 데이터 처리
+            setAllDrinks(drinksResponse.items);
+            setPagination(prev => ({
                 ...prev,
                 drinks: {
                     ...prev.drinks,
                     currentPage: 0,
-                    totalPages: drinksData.pagination.totalPages,
-                    hasMore: 0 < drinksData.pagination.totalPages - 1,
-                },
+                    totalPages: drinksResponse.pagination.totalPages,
+                    hasMore: 0 < drinksResponse.pagination.totalPages - 1,
+                }
             }));
 
-            // Fetch desserts
-            const dessertsData = await OrderQueryService.fetchDessertItems(0, ITEMS_PER_PAGE, {
-                signal: AbortSignal.timeout(10000),
-            });
-            setAllDesserts(dessertsData.items);
-            setPagination((prev) => ({
+            // 디저트 데이터 처리
+            setAllDesserts(dessertsResponse.items);
+            setPagination(prev => ({
                 ...prev,
                 desserts: {
                     ...prev.desserts,
                     currentPage: 0,
-                    totalPages: dessertsData.pagination.totalPages,
-                    hasMore: 0 < dessertsData.pagination.totalPages - 1,
-                },
+                    totalPages: dessertsResponse.pagination.totalPages,
+                    hasMore: 0 < dessertsResponse.pagination.totalPages - 1,
+                }
             }));
         } catch (err) {
             console.error('Error fetching initial data:', err);
-            const errorMessage = err.message.includes('timeout')
+            const errorMessage = err.name === 'AbortError' || err.message.includes('timeout')
                 ? '요청 시간이 초과되었습니다. 네트워크 상태를 확인해 주세요.'
                 : '메뉴를 불러오는 데 실패했습니다.';
             toast.error(errorMessage);
