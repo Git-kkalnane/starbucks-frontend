@@ -27,7 +27,6 @@ export const UserProvider = ({ children }) => {
 
                         if (cart) dispatch(userActions.setCart(cart));
                         if (store) dispatch(userActions.setSelectedStore(store));
-                        if (orders) dispatch(userActions.setActiveOrders(orders));
                     }
                 }
             } catch (error) {
@@ -94,10 +93,6 @@ export const UserProvider = ({ children }) => {
         dispatch(userActions.addActiveOrder(order));
     }, []);
 
-    const updateOrderStatus = useCallback((orderId, status) => {
-        dispatch(userActions.updateOrderStatus(orderId, status));
-    }, []);
-
     // Value object
     const value = {
         state,
@@ -111,7 +106,6 @@ export const UserProvider = ({ children }) => {
             clearCart,
             setSelectedStore,
             addActiveOrder,
-            updateOrderStatus,
         },
     };
 
