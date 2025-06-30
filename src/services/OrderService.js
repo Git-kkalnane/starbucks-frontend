@@ -206,8 +206,6 @@ export const OrderCommandService = {
         try {
             // 주문 데이터 유효성 검사
             validateRequestOrderData(orderData);
-            // const token = starbucksStorage.getAccessToken();
-            // api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             const response = await api.post('/orders', orderData);
             console.log('Order created successfully:', response.data);
