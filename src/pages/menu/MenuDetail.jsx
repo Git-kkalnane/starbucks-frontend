@@ -39,6 +39,13 @@ function MenuDetail() {
     const [initTemperatureOption, setInitTemperatureOption] = useState('');
     const itemType = useLocation().state.itemType;
 
+    useEffect(() => {
+        if (initTemperatureOption === TemperatureDisplayOption.ICE_ONLY) {
+            setIsIced(true);
+        } else if (initTemperatureOption === TemperatureDisplayOption.HOT_ONLY) {
+            setIsIced(false);
+        }
+    }, [initTemperatureOption]);
     // isIced 상태가 변경될 때 temperatureOption 업데이트
     useEffect(() => {
         if (menuItem) {
@@ -187,13 +194,13 @@ function MenuDetail() {
                         <OrderActionBtn
                             price={menuItem.price}
                             onOrder={() => {
-                                console.log('menuItem.img', menuItem.img);
+                                console.log('initTemperatureOption', initTemperatureOption);
+                                // setIsIced(initTemperatureOption === TemperatureDisplayOption.ICE_ONLY);
 
                                 navigate(`/order/menu/${menuItem.id}/configurator`, {
                                     state: {
                                         menuItem: {
                                             ...menuItem,
-                                            isIced,
                                         },
                                         img:
                                             menuItem.img.defaultUrl ||

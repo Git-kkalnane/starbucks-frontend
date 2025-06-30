@@ -58,13 +58,11 @@ function MenuConfigurator() {
     });
 
     const onAddToCart = () => {
-        console.log('User state:', userState);
         handleAddToCart(userActions.addToCart, currentImg);
         navigate('/order');
     };
 
     const onOrder = () => {
-        handleOrder();
         handleAddToCart(userActions.addToCart, currentImg);
         navigate('/cart');
     };
