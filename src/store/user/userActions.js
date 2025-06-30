@@ -1,4 +1,4 @@
-import { validateLoading, validateUser, validateCartItem, validateStore, validateOrder } from '../../_utils/validators';
+import { validateLoading, validateUser, validateCartItem, validateStore } from '../../_utils/validators';
 import {
     SET_LOADING,
     SET_USER,
