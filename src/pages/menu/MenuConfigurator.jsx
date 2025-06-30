@@ -11,6 +11,8 @@ import { useUser } from '../../contexts/UserContext';
 import { useCupSizes, useCupSize, useOrderActions } from '../../hooks/useMenuConfigurator';
 import useAuthRedirect from '../../hooks/useAuthRedirect';
 
+import { CartCommandService } from '../../services/cartService';
+
 // TODO: props로 전달받는 데이터로 변경
 const defaultOptions = [
     { id: 'vanilla', name: '바닐라 시럽', price: 500 },
@@ -59,6 +61,7 @@ function MenuConfigurator() {
 
     const onAddToCart = () => {
         handleAddToCart(userActions.addToCart, currentImg);
+
         navigate('/order');
     };
 
