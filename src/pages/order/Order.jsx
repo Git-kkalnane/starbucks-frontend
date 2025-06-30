@@ -33,113 +33,54 @@ function Order() {
         },
     });
 
-    const fetchItems = useCallback(
-        async (type, page = 0, append = false) => {
-            const isDrink = type === '음료';
-            const stateKey = isDrink ? 'drinks' : 'desserts';
+    const loadInitialData = useCallback(async () => {
+        try {
+            setIsLoading(true);
+            setError(null);
 
-            // Prevent multiple simultaneous loads
-            if (pagination[stateKey].isLoading) return;
+            // Fetch drinks
+            const drinksData = await OrderQueryService.fetchDrinkItems(0, ITEMS_PER_PAGE, {
+                signal: AbortSignal.timeout(10000),
+            });
+            setAllDrinks(drinksData.items);
+            setPagination((prev) => ({
+                ...prev,
+                drinks: {
+                    ...prev.drinks,
+                    currentPage: 0,
+                    totalPages: drinksData.pagination.totalPages,
+                    hasMore: 0 < drinksData.pagination.totalPages - 1,
+                },
+            }));
 
-            try {
-                setPagination((prev) => ({
-                    ...prev,
-                    [stateKey]: {
-                        ...prev[stateKey],
-                        isLoading: true,
-                    },
-                }));
-
-                const { items, pagination: paginationData } = isDrink
-                    ? await OrderQueryService.fetchDrinkItems(page, ITEMS_PER_PAGE, {
-                          signal: AbortSignal.timeout(10000),
-                      })
-                    : await OrderQueryService.fetchDessertItems(page, ITEMS_PER_PAGE, {
-                          signal: AbortSignal.timeout(10000),
-                      });
-
-                setPagination((prev) => ({
-                    ...prev,
-                    [stateKey]: {
-                        currentPage: page,
-                        totalPages: paginationData.totalPages,
-                        hasMore: page < paginationData.totalPages - 1,
-                        isLoading: false,
-                    },
-                }));
-
-                if (isDrink) {
-                    setAllDrinks((prev) => (append ? [...prev, ...items] : items));
-                } else {
-                    setAllDesserts((prev) => (append ? [...prev, ...items] : items));
-                }
-
-                if (error) setError(null);
-            } catch (err) {
-                console.error(`Error fetching ${type} items:`, err);
-                const errorMessage = err.message.includes('timeout')
-                    ? '요청 시간이 초과되었습니다. 네트워크 상태를 확인해 주세요.'
-                    : `${type} 목록을 불러오는 데 실패했습니다.`;
-
-                toast.error(errorMessage);
-                setError(errorMessage);
-
-                setPagination((prev) => ({
-                    ...prev,
-                    [stateKey]: {
-                        ...prev[stateKey],
-                        isLoading: false,
-                    },
-                }));
-            } finally {
-                setIsLoading(false);
-            }
-        },
-        [error],
-    );
-
-    // Initial load - fetch both drinks and desserts
-    useEffect(() => {
-        const fetchInitialData = async () => {
-            try {
-                setIsLoading(true);
-
-                // Fetch drinks
-                const drinksData = await OrderQueryService.fetchDrinkItems(0, ITEMS_PER_PAGE);
-                setAllDrinks(drinksData.items);
-                setPagination((prev) => ({
-                    ...prev,
-                    drinks: {
-                        ...prev.drinks,
-                        currentPage: 0,
-                        totalPages: drinksData.pagination.totalPages,
-                        hasMore: 0 < drinksData.pagination.totalPages - 1,
-                    },
-                }));
-
-                // Fetch desserts
-                const dessertsData = await OrderQueryService.fetchDessertItems(0, ITEMS_PER_PAGE);
-                setAllDesserts(dessertsData.items);
-                setPagination((prev) => ({
-                    ...prev,
-                    desserts: {
-                        ...prev.desserts,
-                        currentPage: 0,
-                        totalPages: dessertsData.pagination.totalPages,
-                        hasMore: 0 < dessertsData.pagination.totalPages - 1,
-                    },
-                }));
-            } catch (err) {
-                console.error('Error fetching initial data:', err);
-                toast.error('메뉴를 불러오는 데 실패했습니다. 나중에 다시 시도해 주세요.');
-                setError('메뉴를 불러오는 데 실패했습니다.');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchInitialData();
+            // Fetch desserts
+            const dessertsData = await OrderQueryService.fetchDessertItems(0, ITEMS_PER_PAGE, {
+                signal: AbortSignal.timeout(10000),
+            });
+            setAllDesserts(dessertsData.items);
+            setPagination((prev) => ({
+                ...prev,
+                desserts: {
+                    ...prev.desserts,
+                    currentPage: 0,
+                    totalPages: dessertsData.pagination.totalPages,
+                    hasMore: 0 < dessertsData.pagination.totalPages - 1,
+                },
+            }));
+        } catch (err) {
+            console.error('Error fetching initial data:', err);
+            const errorMessage = err.message.includes('timeout')
+                ? '요청 시간이 초과되었습니다. 네트워크 상태를 확인해 주세요.'
+                : '메뉴를 불러오는 데 실패했습니다.';
+            toast.error(errorMessage);
+            setError(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
     }, []);
+    useEffect(() => {
+        loadInitialData();
+    }, [loadInitialData]);
 
     const loadMoreItems = async () => {
         const stateKey = activeTab === '음료' ? 'drinks' : 'desserts';
@@ -208,7 +149,7 @@ function Order() {
                     <div className="text-center py-8">
                         <p className="text-red-500 mb-4">{error}</p>
                         <button
-                            onClick={() => fetchItems(activeTab, 0, false)}
+                            onClick={loadInitialData}
                             className="px-4 py-2 bg-starbucks-green text-white rounded-md hover:bg-starbucks-dark-green transition-colors"
                         >
                             다시 시도하기
