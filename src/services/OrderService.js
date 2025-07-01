@@ -188,6 +188,18 @@ export const OrderQueryService = {
             throw error;
         }
     },
+
+    async fetchCurrentOrder(options = {}) {
+        try {
+            const response = await api.get(`/orders/users/current`, options);
+            // const transformedData = transformDessertDetailData(response.data.result);
+            console.log('Current order data:', response.data);
+            return response.data;
+        } catch (error) {
+            console.error(`Failed to fetch current order:`, error);
+            throw error;
+        }
+    },
 };
 
 export const OrderCommandService = {
