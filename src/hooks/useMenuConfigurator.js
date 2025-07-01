@@ -11,15 +11,16 @@ const cupSizes = [
 ];
 
 export const useCupSizes = (menuItem) => {
+    console.log(menuItem.sizeOptions);
     const availableCupSizes = useMemo(() => {
-        if (!menuItem?.cupSize) return cupSizes;
+        if (!menuItem?.sizeOptions) return cupSizes;
 
-        const availableSizes = menuItem.cupSize.split('/').map((size) => size.trim().toLowerCase());
+        const availableSizes = menuItem.sizeOptions.map((size) => size.name.toLowerCase());
 
         return cupSizes.filter((size) =>
             availableSizes.some((availableSize) => size.name.toLowerCase().includes(availableSize)),
         );
-    }, [menuItem?.cupSize]);
+    }, [menuItem?.sizeOptions]);
 
     return availableCupSizes;
 };
