@@ -18,6 +18,7 @@ const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
  */
 const transformItemData = (apiData) => {
     if (!apiData?.items) return [];
+    console.log('transformItemData: ', apiData);
 
     return apiData.items.map((item) => ({
         id: item.id,
@@ -34,45 +35,53 @@ const transformItemData = (apiData) => {
  * @param {Object} item - API에서 받은 음료 상세 데이터
  * @returns {Object|null} 변환된 음료 상세 데이터
  */
-const transformBeverageDetailData = (item) => {
+// 새로운 음료 목록 변환 함수: beverages 배열을 프론트에서 사용하기 좋게 변환
+export const transformBeverageList = (beverages = []) => {
+    return beverages.map(transformBeverageDetail);
+};
+
+// 새로운 음료 상세 변환 함수: 단일 음료 객체 변환
+export const transformBeverageDetail = (item) => {
     if (!item) return null;
-
-    // 지원되는 크기 옵션을 매핑합니다.
-    const mapSizeOptions = (sizes = []) => {
-        return sizes.map((size) => getSizeOptionByName(size)).filter(Boolean); // 유효한 옵션만 필터링
-    };
-
-    // 지원되는 온도 옵션을 매핑하고 필터링합니다.
-    const temperatureOptions = (item.supportedTemperatures || [])
-        .map((temp) => mapTemperatureOption(temp))
-        .filter(Boolean);
-
-    // 기본 온도 표시 옵션을 결정합니다.
-    const defaultTemperature = getTemperatureDisplayOption(temperatureOptions);
-
+    // supportedSizes는 [{name, price, volume}] 구조
+    const sizeOptions = (item.supportedSizes || []).map((size) => ({
+        name: size.name,
+        price: size.price,
+        volume: size.volume,
+    }));
+    // supportedTemperatures는 문자열 또는 배열로 올 수 있음
+    let temperatureOptions = [];
+    if (Array.isArray(item.supportedTemperatures)) {
+        temperatureOptions = item.supportedTemperatures;
+    } else if (typeof item.supportedTemperatures === 'string') {
+        temperatureOptions = [item.supportedTemperatures];
+    }
     return {
+        img: item.iceImageUrl || item.hotImageUrl || item.dessertImageUrl || '',
         id: item.id,
         koreanName: item.nameKo,
         englishName: item.nameEn,
         description: item.description,
         price: item.price,
         isCoffee: item.isCoffee,
-        img: item.imageUrl,
-        category: item.category,
-        status: item.status,
-        sizeOptions: mapSizeOptions(item.supportedSizes),
+        hotImageUrl: item.hotImageUrl,
+        iceImageUrl: item.iceImageUrl,
+        shotName: item.shotName,
+        sizeOptions,
         temperatureOptions,
-        defaultTemperature,
     };
 };
+
+// 기존 transformBeverageDetailData는 더 이상 사용하지 않음 (호환성 위해 남겨둠, 추후 삭제 가능)
+// const transformBeverageDetailData = (item) => { ... }
 
 const transformDessertDetailData = (item) => {
     if (!item) return null;
 
     return {
         id: item.id,
-        koreanName: item.nameKo,
-        englishName: item.nameEn,
+        koreanName: item.dessertItemNameKo,
+        englishName: item.dessertItemNameEn,
         description: item.description,
         price: item.price,
         category: item.category,
@@ -86,13 +95,11 @@ export const OrderQueryService = {
             let response;
             if (itemType === ItemType.BEVERAGE) {
                 response = await api.get(`/items/drinks/${itemId}`, options);
-                const _shopData = transformBeverageDetailData(response.data.result || response.data.data);
-                console.log('API response shopData: ', _shopData);
-                return _shopData;
+                const beverageData = transformBeverageDetail(response.data.result || response.data.data);
+                return beverageData;
             } else if (itemType === ItemType.DESSERT) {
                 response = await api.get(`/items/desserts/${itemId}`, options);
                 const _shopData = transformDessertDetailData(response.data.result || response.data.data);
-                console.log('API response shopData: ', _shopData);
                 return _shopData;
             }
         } catch (error) {
@@ -115,12 +122,13 @@ export const OrderQueryService = {
             const paginationData = response.data.pagination || {
                 currentPage: page,
                 pageSize: size,
-                totalCount: response.data.result?.length || 0,
-                totalPages: Math.ceil((response.data.result?.length || 0) / size) || 1,
+                totalCount: response.data.result?.beverages?.length || 0,
+                totalPages: Math.ceil((response.data.result?.beverages?.length || 0) / size) || 1,
             };
 
+            const items = transformBeverageList(response.data.result.beverages || []);
             return {
-                items: transformItemData(response.data.result || response.data.data),
+                items,
                 pagination: paginationData,
             };
         } catch (error) {
@@ -136,9 +144,8 @@ export const OrderQueryService = {
     async fetchBeverageItemDetail(itemId, options = {}) {
         try {
             const response = await api.get(`/items/drinks/${itemId}`, options);
-            const _shopData = transformBeverageDetailData(response.data.result || response.data.data);
-            console.log('API response shopData: ', _shopData);
-            return _shopData;
+            const beverageData = transformBeverageDetail(response.data.result || response.data.data);
+            return beverageData;
         } catch (error) {
             if (axios.isCancel(error)) {
                 console.log('Request canceled:', error.message);
@@ -163,8 +170,10 @@ export const OrderQueryService = {
                 totalPages: Math.ceil((response.data.result?.length || 0) / size) || 1,
             };
 
+            const items = response.data.result.desserts.map((item) => transformDessertDetailData(item));
+
             return {
-                items: transformItemData(response.data.result || response.data.data),
+                items,
                 pagination: paginationData,
             };
         } catch (error) {
