@@ -18,7 +18,7 @@ const MenuItem = ({ item, className }) => {
         >
             <div className="w-24 h-24 rounded-full bg-gray-100 mr-4 flex-shrink-0">
                 <img
-                    src={typeof item.img === 'string' ? item.img : item.img?.hot || item.img?.cold || ''}
+                    src={typeof item.defaultImg === 'string' ? item.defaultImg : item.img?.hot || item.img?.cold || ''}
                     alt={item.koreanName}
                     className="w-24 h-24 rounded-full mr-4 flex-shrink-0"
                 />

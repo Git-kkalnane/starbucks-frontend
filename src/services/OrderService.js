@@ -7,6 +7,7 @@ import {
 import ItemType from '../_utils/constants/itemType';
 import { validateRequestOrderData } from '../_utils/validators';
 import api from './api';
+import { BeverageTemperatureOption } from '../_utils/constants/beverageOptions';
 
 const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
@@ -51,24 +52,28 @@ export const transformBeverageDetail = (item) => {
     }));
     // supportedTemperatures는 문자열 또는 배열로 올 수 있음
     let temperatureOptions = [];
-    if (Array.isArray(item.supportedTemperatures)) {
-        temperatureOptions = item.supportedTemperatures;
+    let defaultTemperature = '';
+    if (item.supportedTemperatures == 'HOT_ICE') {
+        temperatureOptions = [BeverageTemperatureOption.HOT, BeverageTemperatureOption.ICE];
+
+        defaultTemperature = BeverageTemperatureOption.HOT;
     } else if (typeof item.supportedTemperatures === 'string') {
         temperatureOptions = [item.supportedTemperatures];
     }
     return {
-        img: item.iceImageUrl || item.hotImageUrl || item.dessertImageUrl || '',
+        defaultImg: item.iceImageUrl || item.hotImageUrl || item.dessertImageUrl || '',
         id: item.id,
         koreanName: item.nameKo,
         englishName: item.nameEn,
         description: item.description,
         price: item.price,
         isCoffee: item.isCoffee,
-        hotImageUrl: item.hotImageUrl,
-        iceImageUrl: item.iceImageUrl,
+        img: { hot: item.hotImageUrl, ice: item.iceImageUrl },
         shotName: item.shotName,
         sizeOptions,
         temperatureOptions,
+        defaultTemperature,
+        itemType: ItemType.BEVERAGE,
     };
 };
 
@@ -85,17 +90,22 @@ const transformDessertDetailData = (item) => {
         description: item.description,
         price: item.price,
         category: item.category,
-        img: item.imageUrl,
+        defaultImg: item.imageUrl,
+        itemType: ItemType.DESSERT,
     };
 };
 
 export const OrderQueryService = {
     async fetchItemDetail(itemId, itemType, options = {}) {
         try {
+            console.log('Fetching item itemType', itemType);
             let response;
             if (itemType === ItemType.BEVERAGE) {
                 response = await api.get(`/items/drinks/${itemId}`, options);
-                const beverageData = transformBeverageDetail(response.data.result || response.data.data);
+                console.log('API response beverageData: ', response.data);
+                const beverageData = transformBeverageDetail(
+                    response.data.result.beverageInfo || response.data.data.beverageInfo,
+                );
                 return beverageData;
             } else if (itemType === ItemType.DESSERT) {
                 response = await api.get(`/items/desserts/${itemId}`, options);
