@@ -6,24 +6,22 @@ export const CartCommandService = {
     async addItemToCart(cartItemData, options = {}) {
         try {
             validateCartItem(cartItemData);
-            const addCartItemRequest = {
+            const cartItemDto = {
                 id: 0,
-                items: [
-                    {
-                        itemId: cartItemData.item.id,
-                        itemType: cartItemData.itemType,
-                        temperatureOption: cartItemData.temperatureOption,
-                        itemOptions: cartItemData.options,
-                        cupSize: cartItemData.cupSize,
-                        quantity: cartItemData.quantity,
-                        priceWithOptions: cartItemData.priceWithOptions,
-                    },
-                ],
+
+                itemId: cartItemData.item.id,
+                image: cartItemData.img,
+                itemType: cartItemData.itemType,
+                temperatureOption: cartItemData.temperatureOption,
+                itemOptions: cartItemData.options,
+                cupSize: cartItemData.cupSize,
+                quantity: cartItemData.quantity,
+                priceWithOptions: cartItemData.priceWithOptions,
                 totalPrice: cartItemData.priceWithOptions * cartItemData.quantity,
             };
-            console.log('Adding item to cart:', addCartItemRequest.items[0]);
+            console.log('Adding item to cart:', cartItemDto);
 
-            const response = await api.post(`/carts`, addCartItemRequest, options);
+            const response = await api.post(`/carts/addItem`, cartItemDto, options);
             console.log('Item added to cart successfully:', response.data);
             return response.data;
         } catch (error) {
