@@ -24,10 +24,10 @@ export const BeverageTemperatureOption = Object.freeze({
  */
 export const TemperatureDisplayOption = Object.freeze({
     /** 핫 전용 */
-    HOT_ONLY: 'Hot only',
+    HOT_ONLY: 'HOT_ONLY',
 
     /** 아이스 전용 */
-    ICE_ONLY: 'Ice only',
+    ICE_ONLY: 'ICE_ONLY',
 
     /** 핫/아이스 선택 가능 */
     HOT_OR_ICE: 'Hot/Ice',
@@ -39,10 +39,12 @@ export const TemperatureDisplayOption = Object.freeze({
  * @returns {string} TemperatureDisplayOption 값
  */
 export const getTemperatureDisplayOption = (temperatureOptions = []) => {
-    const hasHot = temperatureOptions.includes(BeverageTemperatureOption.HOT) || 
-                  temperatureOptions.includes(BeverageTemperatureOption.HOT_ONLY);
-    const hasIce = temperatureOptions.includes(BeverageTemperatureOption.ICE) || 
-                  temperatureOptions.includes(BeverageTemperatureOption.ICE_ONLY);
+    const hasHot =
+        temperatureOptions.includes(BeverageTemperatureOption.HOT) ||
+        temperatureOptions.includes(BeverageTemperatureOption.HOT_ONLY);
+    const hasIce =
+        temperatureOptions.includes(BeverageTemperatureOption.ICE) ||
+        temperatureOptions.includes(BeverageTemperatureOption.ICE_ONLY);
 
     if (hasHot && !hasIce) {
         return TemperatureDisplayOption.HOT_ONLY;
@@ -53,7 +55,7 @@ export const getTemperatureDisplayOption = (temperatureOptions = []) => {
     } else if (temperatureOptions.includes(BeverageTemperatureOption.ICE_ONLY)) {
         return TemperatureDisplayOption.ICE_ONLY;
     }
-    
+
     return TemperatureDisplayOption.HOT_OR_ICE;
 };
 
@@ -70,6 +72,8 @@ export const mapTemperatureOption = (temp) => {
         case 'ICE':
             return BeverageTemperatureOption.ICE;
         case 'HOT_ONLY':
+            return BeverageTemperatureOption.HOT_ONLY;
+        case 'HOT ONLY':
             return BeverageTemperatureOption.HOT_ONLY;
         case 'ICE_ONLY':
             return BeverageTemperatureOption.ICE_ONLY;
