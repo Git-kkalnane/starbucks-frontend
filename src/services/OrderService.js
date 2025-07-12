@@ -219,6 +219,16 @@ export const OrderQueryService = {
             throw error;
         }
     },
+    async fetchCurrentOrderDetail(orderId, options = {}) {
+        try {
+            const response = await api.get(`/orders/${orderId}`, options);
+            console.log('Current order detail data:', response.data);
+            return response.data.result;
+        } catch (error) {
+            console.error('Failed to fetch current order detail:', error);
+            throw error;
+        }
+    },
 };
 
 export const OrderCommandService = {
