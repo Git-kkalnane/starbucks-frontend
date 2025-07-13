@@ -1,13 +1,10 @@
 import axios from 'axios';
-import {
-    getSizeOptionByName,
-    getTemperatureDisplayOption,
-    mapTemperatureOption,
-} from '../_utils/constants/beverageOptions';
+
 import ItemType from '../_utils/constants/itemType';
 import { validateRequestOrderData } from '../_utils/validators';
 import api from './api';
 import { BeverageTemperatureOption } from '../_utils/constants/beverageOptions';
+import { starbucksStorage } from '../store/starbucksStorage';
 
 const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
@@ -211,9 +208,11 @@ export const OrderQueryService = {
     async fetchCurrentOrder(options = {}) {
         try {
             const response = await api.get(`/orders/me/current`, options);
-            // const transformedData = transformDessertDetailData(response.data.result);
-            console.log('Current order data:', response.data);
-            return response.data.result;
+
+            const orderData = response.data.result;
+            starbucksStorage.setOrders(orderData);
+
+            return orderData;
         } catch (error) {
             console.error(`Failed to fetch current order:`, error);
             throw error;

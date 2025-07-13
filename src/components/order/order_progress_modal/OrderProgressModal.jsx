@@ -35,17 +35,17 @@ export default function OrderProgressModal({ orderIds = [], open, onClose }) {
             {/* 주문 진행 상태 */}
             <div className="px-6 pb-2">
                 <div className="text-xl font-bold text-gray-900 leading-snug mb-1">
-                    {orderDetailData[0].orderNumber}님의 주문은 {orderDetailData[0].orderStatus} 상태입니다.
+                    {orderDetailData[0].orderNumber}주문은 {orderDetailData[0].orderStatus} 상태입니다.
                     <span role="img" aria-label="hourglass">
                         ⏳
                     </span>
                 </div>
                 <div className="text-gray-500 text-sm leading-tight">
-                    신속하고 정확하게 준비하겠스빈다. 준비 완료 후 빠르게 픽업해 주세요.
+                    신속하고 정확하게 준비하겠습니다. 준비 완료 후 빠르게 픽업해 주세요.
                 </div>
             </div>
             {/* 진행상태 바 */}
-            <OrderStatusBar />
+            <OrderStatusBar orderStatus={orderDetailData[0].orderStatus} />
             {/* 주문내역, 영수증 버튼 */}
             {/* <OrderReceiptBar /> */}
             {/* 포장 옵션 */}
