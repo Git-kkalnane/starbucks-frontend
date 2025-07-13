@@ -32,7 +32,7 @@ export default function ActiveOrderBtn({ onClick, orders = [] }) {
                 </div>
             </div>
             {open && (
-                <div className="md:pl-[var(--nav-width)] fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="pt-12 md:pl-[var(--nav-width)] fixed inset-0  bg-black bg-opacity-50 z-50">
                     <OrderProgressModal orderIds={orderIds} open={open} onClose={() => setOpen(false)} />
                 </div>
             )}
