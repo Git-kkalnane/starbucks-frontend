@@ -37,16 +37,15 @@ api.interceptors.response.use(
 
             try {
                 // 리프레시 토큰으로 액세스 토큰 갱신 시도
-                const response = await api.post(
-                    '/auth/refresh-token',
-                    {},
-                    {
-                        withCredentials: true, // httpOnly 쿠키를 위해 필요
-                    },
-                );
+                const response = await api.post('/auth/reissue-access-token', {}, { withCredentials: true });
+                const authHeader = response.headers['authorization'];
 
-                const { accessToken } = response.data;
-                starbucksStorage.setAccessToken(accessToken);
+                if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                    throw new Error('No access token found in response');
+                }
+                const accessToken = authHeader.split(' ')[1];
+
+                AuthService.setAuthToken(accessToken);
 
                 // 원래 요청을 새로운 토큰으로 재시도
                 originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
