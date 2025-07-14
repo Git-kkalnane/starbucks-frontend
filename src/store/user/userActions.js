@@ -1,4 +1,10 @@
-import { validateLoading, validateUser, validateCartItem, validateStore } from '../../_utils/validators';
+import {
+    validateLoading,
+    validateUser,
+    validateCartItem,
+    validateStore,
+    validateCurrentOrder,
+} from '../../_utils/validators';
 import {
     SET_LOADING,
     SET_USER,
@@ -85,17 +91,10 @@ export const setSelectedStore = (store) => {
     return { type: SET_SELECTED_STORE, payload: { store } };
 };
 
-export const addActiveOrder = (order) => {
-    if (!validateOrder(order)) {
-        console.error('Invalid order data');
-        return { type: ADD_ACTIVE_ORDER, payload: null };
-    }
-    return { type: ADD_ACTIVE_ORDER, payload: order };
-};
-
 export const setActiveOrders = (orders) => {
-    if (!Array.isArray(orders) || !orders.every(validateOrder)) {
-        console.error('Invalid orders data');
+    console.log('setActiveOrders: ', orders);
+    if (!Array.isArray(orders) || !validateCurrentOrder(orders)) {
+        console.error('Invalid active orders data');
         return { type: SET_ACTIVE_ORDERS, payload: [] };
     }
     return { type: SET_ACTIVE_ORDERS, payload: orders };
@@ -118,7 +117,6 @@ const userActions = {
     removeFromCart,
     clearCart,
     setSelectedStore,
-    addActiveOrder,
     setActiveOrders,
     updateOrderStatus,
 };

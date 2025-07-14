@@ -1,0 +1,7 @@
+export const OrderStatus = {
+    PLACED: 'PLACED',
+    PREPARING: 'PREPARING',
+    READY_FOR_PICKUP: 'READY_FOR_PICKUP',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED',
+};

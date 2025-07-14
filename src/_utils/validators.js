@@ -122,14 +122,43 @@ export const validateRequestOrderData = (orderData) => {
 
         // 아이템 타입 검증 (ItemType enum 사용)
         const validItemTypes = Object.values(ItemType).filter(
-            (value) => typeof value === 'string' && value !== 'fromString'
+            (value) => typeof value === 'string' && value !== 'fromString',
         );
 
         if (!validItemTypes.includes(item.itemType)) {
             throw new Error(
                 `주문 항목 ${index + 1}의 아이템 타입이 유효하지 않습니다: ${item.itemType}. ` +
-                `유효한 타입: ${validItemTypes.join(', ')}`
+                    `유효한 타입: ${validItemTypes.join(', ')}`,
             );
         }
     });
+};
+
+export const validateCurrentOrder = (orders) => {
+    if (!Array.isArray(orders)) {
+        console.error('[validateCurrentOrder] orders is not an array:', orders);
+        return false;
+    }
+    let isValid = true;
+    orders.forEach((order, idx) => {
+        if (!validateResponseOrder(order)) {
+            console.error(`[validateCurrentOrder] Invalid order at index ${idx}:`, order);
+            isValid = false;
+        }
+    });
+    return isValid;
+};
+
+export const validateResponseOrder = (order) => {
+    if (!order || typeof order !== 'object') {
+        console.error('[validateResponseOrder] order is not an object:', order);
+        return false;
+    }
+    const requiredFields = ['orderId', 'pickupType', 'totalPrice', 'orderStatus'];
+    const missingFields = requiredFields.filter((field) => !(field in order));
+    if (missingFields.length > 0) {
+        console.error('[validateResponseOrder] Missing required fields:', missingFields, 'in order:', order);
+        return false;
+    }
+    return true;
 };

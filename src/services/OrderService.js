@@ -1,12 +1,10 @@
 import axios from 'axios';
-import {
-    getSizeOptionByName,
-    getTemperatureDisplayOption,
-    mapTemperatureOption,
-} from '../_utils/constants/beverageOptions';
+
 import ItemType from '../_utils/constants/itemType';
 import { validateRequestOrderData } from '../_utils/validators';
 import api from './api';
+import { BeverageTemperatureOption } from '../_utils/constants/beverageOptions';
+import { starbucksStorage } from '../store/starbucksStorage';
 
 const URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
@@ -18,6 +16,7 @@ const API_VERSION = import.meta.env.VITE_API_BASE_URL || '/api/v1';
  */
 const transformItemData = (apiData) => {
     if (!apiData?.items) return [];
+    console.log('transformItemData: ', apiData);
 
     return apiData.items.map((item) => ({
         id: item.id,
@@ -34,65 +33,80 @@ const transformItemData = (apiData) => {
  * @param {Object} item - API에서 받은 음료 상세 데이터
  * @returns {Object|null} 변환된 음료 상세 데이터
  */
-const transformBeverageDetailData = (item) => {
+// 새로운 음료 목록 변환 함수: beverages 배열을 프론트에서 사용하기 좋게 변환
+export const transformBeverageList = (beverages = []) => {
+    return beverages.map(transformBeverageDetail);
+};
+
+// 새로운 음료 상세 변환 함수: 단일 음료 객체 변환
+export const transformBeverageDetail = (item) => {
     if (!item) return null;
+    // supportedSizes는 [{name, price, volume}] 구조
+    const sizeOptions = (item.supportedSizes || []).map((size) => ({
+        name: size.name,
+        price: size.price,
+        volume: size.volume,
+    }));
+    // supportedTemperatures는 문자열 또는 배열로 올 수 있음
+    let temperatureOptions = [];
+    let defaultTemperature = '';
+    if (item.supportedTemperatures == 'HOT_ICE') {
+        temperatureOptions = [BeverageTemperatureOption.HOT, BeverageTemperatureOption.ICE];
 
-    // 지원되는 크기 옵션을 매핑합니다.
-    const mapSizeOptions = (sizes = []) => {
-        return sizes.map((size) => getSizeOptionByName(size)).filter(Boolean); // 유효한 옵션만 필터링
-    };
-
-    // 지원되는 온도 옵션을 매핑하고 필터링합니다.
-    const temperatureOptions = (item.supportedTemperatures || [])
-        .map((temp) => mapTemperatureOption(temp))
-        .filter(Boolean);
-
-    // 기본 온도 표시 옵션을 결정합니다.
-    const defaultTemperature = getTemperatureDisplayOption(temperatureOptions);
-
+        defaultTemperature = BeverageTemperatureOption.HOT;
+    } else if (typeof item.supportedTemperatures === 'string') {
+        temperatureOptions = [item.supportedTemperatures];
+    }
     return {
+        defaultImg: item.iceImageUrl || item.hotImageUrl || item.dessertImageUrl || '',
         id: item.id,
         koreanName: item.nameKo,
         englishName: item.nameEn,
         description: item.description,
         price: item.price,
         isCoffee: item.isCoffee,
-        img: item.imageUrl,
-        category: item.category,
-        status: item.status,
-        sizeOptions: mapSizeOptions(item.supportedSizes),
+        img: { hot: item.hotImageUrl, ice: item.iceImageUrl },
+        shotName: item.shotName,
+        sizeOptions,
         temperatureOptions,
         defaultTemperature,
+        itemType: ItemType.BEVERAGE,
     };
 };
+
+// 기존 transformBeverageDetailData는 더 이상 사용하지 않음 (호환성 위해 남겨둠, 추후 삭제 가능)
+// const transformBeverageDetailData = (item) => { ... }
 
 const transformDessertDetailData = (item) => {
     if (!item) return null;
 
     return {
         id: item.id,
-        koreanName: item.nameKo,
-        englishName: item.nameEn,
+        koreanName: item.dessertItemNameKo,
+        englishName: item.dessertItemNameEn,
         description: item.description,
         price: item.price,
         category: item.category,
-        img: item.imageUrl,
+        defaultImg: item.imageUrl,
+        itemType: ItemType.DESSERT,
     };
 };
 
 export const OrderQueryService = {
     async fetchItemDetail(itemId, itemType, options = {}) {
         try {
+            console.log('Fetching item itemType', itemType);
             let response;
             if (itemType === ItemType.BEVERAGE) {
                 response = await api.get(`/items/drinks/${itemId}`, options);
-                const _shopData = transformBeverageDetailData(response.data.result || response.data.data);
-                console.log('API response shopData: ', _shopData);
-                return _shopData;
+                console.log('API response beverageData: ', response.data);
+                const beverageData = transformBeverageDetail(
+                    response.data.result.beverageInfo || response.data.data.beverageInfo,
+                );
+                return beverageData;
             } else if (itemType === ItemType.DESSERT) {
                 response = await api.get(`/items/desserts/${itemId}`, options);
                 const _shopData = transformDessertDetailData(response.data.result || response.data.data);
-                console.log('API response shopData: ', _shopData);
                 return _shopData;
             }
         } catch (error) {
@@ -115,12 +129,13 @@ export const OrderQueryService = {
             const paginationData = response.data.pagination || {
                 currentPage: page,
                 pageSize: size,
-                totalCount: response.data.result?.length || 0,
-                totalPages: Math.ceil((response.data.result?.length || 0) / size) || 1,
+                totalCount: response.data.result?.beverages?.length || 0,
+                totalPages: Math.ceil((response.data.result?.beverages?.length || 0) / size) || 1,
             };
 
+            const items = transformBeverageList(response.data.result.beverages || []);
             return {
-                items: transformItemData(response.data.result || response.data.data),
+                items,
                 pagination: paginationData,
             };
         } catch (error) {
@@ -136,9 +151,8 @@ export const OrderQueryService = {
     async fetchBeverageItemDetail(itemId, options = {}) {
         try {
             const response = await api.get(`/items/drinks/${itemId}`, options);
-            const _shopData = transformBeverageDetailData(response.data.result || response.data.data);
-            console.log('API response shopData: ', _shopData);
-            return _shopData;
+            const beverageData = transformBeverageDetail(response.data.result || response.data.data);
+            return beverageData;
         } catch (error) {
             if (axios.isCancel(error)) {
                 console.log('Request canceled:', error.message);
@@ -163,8 +177,10 @@ export const OrderQueryService = {
                 totalPages: Math.ceil((response.data.result?.length || 0) / size) || 1,
             };
 
+            const items = response.data.result.desserts.map((item) => transformDessertDetailData(item));
+
             return {
-                items: transformItemData(response.data.result || response.data.data),
+                items,
                 pagination: paginationData,
             };
         } catch (error) {
@@ -188,6 +204,30 @@ export const OrderQueryService = {
             throw error;
         }
     },
+
+    async fetchCurrentOrder(options = {}) {
+        try {
+            const response = await api.get(`/orders/me/current`, options);
+
+            const orderData = response.data.result;
+            starbucksStorage.setOrders(orderData);
+
+            return orderData;
+        } catch (error) {
+            console.error(`Failed to fetch current order:`, error);
+            throw error;
+        }
+    },
+    async fetchCurrentOrderDetail(orderId, options = {}) {
+        try {
+            const response = await api.get(`/orders/${orderId}`, options);
+            console.log('Current order detail data:', response.data);
+            return response.data.result;
+        } catch (error) {
+            console.error('Failed to fetch current order detail:', error);
+            throw error;
+        }
+    },
 };
 
 export const OrderCommandService = {
@@ -205,7 +245,10 @@ export const OrderCommandService = {
     async createOrder(orderData, options = {}) {
         try {
             // 주문 데이터 유효성 검사
+            console.log('Order data:', orderData);
+
             validateRequestOrderData(orderData);
+            // console.log('Order data:', orderData);
 
             const response = await api.post('/orders', orderData);
             console.log('Order created successfully:', response.data);

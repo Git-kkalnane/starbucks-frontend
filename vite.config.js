@@ -10,7 +10,7 @@ export default defineConfig(({ command, mode }) => {
     return {
         plugins: [react(), svgr()],
         server: {
-            port: 3000,
+            port: 5173,
             // TODO: 서버 개발 후 로직 변경 예정 (임시로 notion API사용)
             proxy: {
                 '/api/shops': {

@@ -1,8 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Showcase from '../components/home/Showcase';
 import AuthPanel from '../components/home/AuthPanel';
 import { CommonHeader } from '../components/common/customHeader';
 import CommonLayout from '../components/layouts/CommonLayout';
+import { OrderQueryService } from '../services/OrderService';
+import { Box, Typography, List, ListItem, Divider, Chip, Paper } from '@mui/material';
+
+const OrderInfo = ({ order }) => {
+    if (!order) return null;
+
+    return (
+        <Paper elevation={3} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h6" component="h2">
+                    주문 번호: {order.orderIdUI}
+                </Typography>
+                <Chip
+                    label={order.orderStatus}
+                    color={
+                        order.orderStatus === 'COMPLETED'
+                            ? 'success'
+                            : order.orderStatus === 'PREPARING'
+                            ? 'warning'
+                            : 'primary'
+                    }
+                />
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle1" fontWeight="bold">
+                    {order.storeName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    {order.storeAddress}
+                </Typography>
+                <Chip label={order.pickupType} variant="outlined" size="small" sx={{ mt: 1 }} />
+            </Box>
+
+            <Divider sx={{ my: 2 }} />
+
+            <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                주문 내역
+            </Typography>
+            <List dense>
+                {order.orderItems.map((item, index) => (
+                    <ListItem key={index} sx={{ px: 0 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                            <Typography variant="body2">
+                                {item.name} × {item.quantity}
+                            </Typography>
+                            <Typography variant="body2">{item.price.toLocaleString()}원</Typography>
+                        </Box>
+                    </ListItem>
+                ))}
+            </List>
+        </Paper>
+    );
+};
 
 const carouselItems = [
     {
@@ -19,17 +73,38 @@ const carouselItems = [
     },
 ];
 
-function Home() {
+const Home = () => {
+    const [currentOrder, setCurrentOrder] = useState(null);
+
+    // useEffect(() => {
+    //     const loadOrder = async () => {
+    //         try {
+    //             const orderData = await OrderQueryService.fetchCurrentOrder();
+    //             setCurrentOrder(orderData);
+    //         } catch (error) {
+    //             console.error('Failed to fetch current order:', error);
+    //             setCurrentOrder(null);
+    //         }
+    //     };
+
+    //     loadOrder();
+    // }, []);
+
     return (
         <CommonLayout>
             <CommonHeader title="" />
-
             <AuthPanel />
+
+            {currentOrder && (
+                <Box sx={{ maxWidth: 600, mx: 'auto', mt: 4, px: 2 }}>
+                    <OrderInfo order={currentOrder} />
+                </Box>
+            )}
 
             <Showcase carouselItems={carouselItems} title="What's New" className="mb-10" />
             <Showcase carouselItems={carouselItems} title="신규 이벤트" />
         </CommonLayout>
     );
-}
+};
 
 export default Home;

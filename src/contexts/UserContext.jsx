@@ -3,6 +3,7 @@ import AuthService from '../services/AuthService';
 import { userReducer, initialState } from '../store/user/userReducer';
 import { starbucksStorage } from '../store/starbucksStorage';
 import userActions from '../store/user/userActions';
+import { CartQueryService } from '../services/cartService';
 
 const UserContext = createContext();
 
@@ -45,6 +46,10 @@ export const UserProvider = ({ children }) => {
             const user = await AuthService.login(email, password);
             // 로그인 성공시 userContext에 정보 저장
             dispatch(userActions.loginSuccess(user));
+
+            const cartItems = await CartQueryService.getCartItems();
+            console.log('Cart items:', cartItems);
+            dispatch(userActions.setCart(cartItems));
             return true;
         } catch (error) {
             console.error('로그인 실패:', error);
@@ -89,8 +94,9 @@ export const UserProvider = ({ children }) => {
         dispatch(userActions.setSelectedStore(store));
     }, []);
 
-    const addActiveOrder = useCallback((order) => {
-        dispatch(userActions.addActiveOrder(order));
+    const setActiveOrders = useCallback((orders) => {
+        console.log('UserContext setActiveOrders: ', orders);
+        dispatch(userActions.setActiveOrders(orders));
     }, []);
 
     // Value object
@@ -105,7 +111,7 @@ export const UserProvider = ({ children }) => {
             removeFromCart,
             clearCart,
             setSelectedStore,
-            addActiveOrder,
+            setActiveOrders,
         },
     };
 

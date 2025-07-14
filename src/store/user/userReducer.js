@@ -9,6 +9,7 @@ import {
     CLEAR_CART,
     SET_SELECTED_STORE,
     ADD_ACTIVE_ORDER,
+    SET_ACTIVE_ORDERS,
     UPDATE_ORDER_STATUS,
     LOGIN_SUCCESS,
     LOGOUT,
@@ -110,10 +111,10 @@ export const userReducer = (state, action) => {
                 selectedStore: action.payload.store,
             };
 
-        case ADD_ACTIVE_ORDER:
+        case SET_ACTIVE_ORDERS:
             return {
                 ...state,
-                activeOrders: [...state.activeOrders, action.payload.order],
+                activeOrders: action.payload,
             };
 
         case UPDATE_ORDER_STATUS:

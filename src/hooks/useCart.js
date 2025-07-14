@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { starbucksStorage } from '../store/starbucksStorage';
+import { CartCommandService } from '../services/cartService';
 
 /**
  * 장바구니 관련 작업을 위한 커스텀 훅
@@ -42,7 +43,7 @@ export const useCart = (
                     price: typeof menuItem.price === 'number' ? menuItem.price : 0,
                     koreanName: menuItem.koreanName || menuItem.name || '알 수 없음',
                     englishName: menuItem.englishName || menuItem.name || 'Unknown',
-                    itemType: menuItem.itemType || 'beverage',
+                    itemType: menuItem.itemType || 'BEVERAGE',
                 };
 
                 // 유효성 검사기에서 기대하는 구조로 장바구니 아이템 생성
@@ -64,6 +65,7 @@ export const useCart = (
 
                 // 액션 생성자를 사용해 장바구니에 추가
                 addToCart(cartItem);
+                CartCommandService.addItemToCart(cartItem);
 
                 // 스토리지에도 장바구니 아이템 업데이트
                 starbucksStorage.addCart(cartItem);
