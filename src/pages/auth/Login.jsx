@@ -53,19 +53,6 @@ function Login() {
         }
     };
 
-    // 소셜 로그인 핸들러
-    const handleSocialLogin = async (provider) => {
-        try {
-            // 소셜 로그인 URL로 리다이렉트
-            window.location.href = `${
-                process.env.REACT_APP_API_URL || 'http://localhost:8080'
-            }/oauth2/authorization/${provider}`;
-        } catch (err) {
-            console.error('Social login error:', err);
-            setError('소셜 로그인 중 오류가 발생했습니다.');
-        }
-    };
-
     return (
         <CommonLayout>
             <ColumnHeader title="로그인" hasBack={true} onBack={() => window.history.back()} className="mb-[20px]" />

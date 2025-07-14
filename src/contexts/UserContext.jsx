@@ -3,7 +3,7 @@ import AuthService from '../services/AuthService';
 import { userReducer, initialState } from '../store/user/userReducer';
 import { starbucksStorage } from '../store/starbucksStorage';
 import userActions from '../store/user/userActions';
-import { CartQueryService } from '../services/cartService';
+// import { CartQueryService } from '../services/cartService';
 
 const UserContext = createContext();
 
@@ -47,7 +47,7 @@ export const UserProvider = ({ children }) => {
             // 로그인 성공시 userContext에 정보 저장
             dispatch(userActions.loginSuccess(user));
 
-            const cartItems = await CartQueryService.getCartItems();
+            // const cartItems = await CartQueryService.getCartItems();
             console.log('Cart items:', cartItems);
             dispatch(userActions.setCart(cartItems));
             return true;
